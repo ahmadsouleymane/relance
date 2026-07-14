@@ -4,14 +4,20 @@ import { api } from "../api/client.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { IconArrowRight, IconBell, IconLink, IconChart } from "../components/icons.jsx";
 
+function formatFcfa(n) {
+  return `${n.toLocaleString("fr-FR")} F`;
+}
+
 export default function Dashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [waStatus, setWaStatus] = useState(null);
+  const [digest, setDigest] = useState(null);
 
   useEffect(() => {
     api.get("/stats/dashboard").then(setStats).catch(() => {});
     api.get("/whatsapp/status").then(setWaStatus).catch(() => {});
+    api.get("/digest/weekly").then(setDigest).catch(() => {});
   }, []);
 
   const firstName = user?.businessName?.split(/\s+/)[0] || "";
@@ -43,6 +49,28 @@ export default function Dashboard() {
         <Stat label="Reçus / 7j" value={stats?.inboundLast7d} />
         <Stat label="Envoyés / 7j" value={stats?.outboundLast7d} />
       </div>
+
+      {digest && (
+        <div className="card">
+          <span className="eyebrow">Cette semaine</span>
+          <div className="stack--sm" style={{ marginTop: 10 }}>
+            <div className="row row--between">
+              <span style={{ fontSize: 13.5 }}>Leads chauds</span>
+              <span className="mono" style={{ fontWeight: 700 }}>{digest.hotLeads.length}</span>
+            </div>
+            <div className="row row--between">
+              <span style={{ fontSize: 13.5 }}>Factures payées</span>
+              <span className="mono" style={{ fontWeight: 700 }}>
+                {digest.paidInvoicesCount} · {formatFcfa(digest.paidInvoicesTotal)}
+              </span>
+            </div>
+            <div className="row row--between">
+              <span style={{ fontSize: 13.5 }}>Messages en attente</span>
+              <span className="mono" style={{ fontWeight: 700 }}>{digest.pendingFollowUpsCount}</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {stats?.pendingFollowUps != null && (
         <Link to="/relances" className="suggestion-card suggestion-card--attention" style={{ textDecoration: "none" }}>

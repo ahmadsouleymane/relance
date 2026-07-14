@@ -27,6 +27,13 @@ const STATUS_META = {
   perdu: { label: "Perdu", pillClass: "pill pill--danger" },
 };
 
+// "froid" gets no badge — it's the default, silent state; only worth
+// calling out when a lead is worth acting on.
+const LEAD_SCORE_META = {
+  chaud: { label: "Chaud", pillClass: "pill pill--accent" },
+  tiede: { label: "Tiède", pillClass: "pill" },
+};
+
 export default function ContactDetail() {
   const { id } = useParams();
   const [contact, setContact] = useState(null);
@@ -92,7 +99,14 @@ export default function ContactDetail() {
       <div className="row" style={{ gap: 14 }}>
         <div className="avatar" style={{ width: 54, height: 54, fontSize: 18 }}>{initialsOf(contact.displayName)}</div>
         <div>
-          <div className="h1">{contact.displayName}</div>
+          <div className="row" style={{ gap: 8 }}>
+            <div className="h1">{contact.displayName}</div>
+            {LEAD_SCORE_META[contact.leadLabel] && (
+              <span className={LEAD_SCORE_META[contact.leadLabel].pillClass} style={{ fontSize: 10.5 }}>
+                {LEAD_SCORE_META[contact.leadLabel].label}
+              </span>
+            )}
+          </div>
           <div className="text-muted mono" style={{ fontSize: 12.5 }}>{contact.phoneNumber}</div>
         </div>
       </div>

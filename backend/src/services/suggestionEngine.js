@@ -15,6 +15,11 @@ function bandFor(daysSince) {
   return URGENCY_BANDS.find((b) => daysSince >= b.minDays) || null;
 }
 
+// Lower index = more urgent. Used as the primary sort key so leadScore only
+// breaks ties within the same urgency band, never overrides it — silence
+// duration is still the product's primary signal.
+const BAND_RANK = Object.fromEntries(URGENCY_BANDS.map((b, i) => [b.level, i]));
+
 /**
  * A contact needs a follow-up suggestion when the vendor is the one who owes
  * a reply: the last message on the thread came from the client (inbound),
@@ -49,10 +54,11 @@ export async function getFollowUpSuggestions(ownerId, { limit = 200 } = {}) {
       urgency: band.level,
       reason: band.label,
       preview: contact.lastMessagePreview,
+      leadScore: contact.leadScore || 0,
     });
   }
 
-  // Most urgent (oldest silence) first.
-  suggestions.sort((a, b) => b.daysSince - a.daysSince);
+  // Most urgent band first; within a band, hottest lead first.
+  suggestions.sort((a, b) => BAND_RANK[a.urgency] - BAND_RANK[b.urgency] || b.leadScore - a.leadScore);
   return suggestions;
 }

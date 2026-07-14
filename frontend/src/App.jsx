@@ -11,6 +11,10 @@ import Connect from "./pages/Connect.jsx";
 import Relances from "./pages/Relances.jsx";
 import Analytics from "./pages/Analytics.jsx";
 import Billing from "./pages/Billing.jsx";
+import Catalog from "./pages/Catalog.jsx";
+import Storefront from "./pages/Storefront.jsx";
+import Invoices from "./pages/Invoices.jsx";
+import InvoicePublic from "./pages/InvoicePublic.jsx";
 
 function PrivateArea() {
   const { user, loading } = useAuth();
@@ -31,6 +35,8 @@ export default function App() {
     <Routes>
       <Route path="/connexion" element={<PublicOnly><Login /></PublicOnly>} />
       <Route path="/inscription" element={<PublicOnly><Register /></PublicOnly>} />
+      <Route path="/v/:storeSlug" element={<Storefront />} />
+      <Route path="/f/:publicToken" element={<InvoicePublic />} />
 
       <Route element={<PrivateArea />}>
         <Route path="/" element={<Dashboard />} />
@@ -38,6 +44,8 @@ export default function App() {
         <Route path="/contacts/tags" element={<Tags />} />
         <Route path="/contacts/:id" element={<ContactDetail />} />
         <Route path="/relances" element={<Relances />} />
+        <Route path="/catalogue" element={<Catalog />} />
+        <Route path="/factures" element={<Invoices />} />
         <Route path="/analytiques" element={<Analytics />} />
         <Route path="/connexion-whatsapp" element={<Connect />} />
         <Route path="/abonnement" element={<Billing />} />

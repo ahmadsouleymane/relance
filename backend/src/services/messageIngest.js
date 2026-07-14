@@ -1,5 +1,6 @@
 import Contact from "../models/Contact.js";
 import Message from "../models/Message.js";
+import { hasIntentSignal } from "../config/intentKeywords.js";
 
 const TYPE_LABELS = {
   conversation: "text",
@@ -58,7 +59,7 @@ async function upsertContact({ owner, waId, direction, pushName, text, timestamp
   return contact;
 }
 
-async function storeMessage({ owner, contact, waMessage, direction, type, text, timestamp }) {
+async function storeMessage({ owner, contact, waMessage, direction, type, text, timestamp, intentSignal }) {
   try {
     await Message.create({
       owner,
@@ -67,6 +68,7 @@ async function storeMessage({ owner, contact, waMessage, direction, type, text, 
       direction,
       type,
       text,
+      hasIntentSignal: intentSignal,
       timestamp,
     });
   } catch (err) {
@@ -92,7 +94,16 @@ export async function logInboundMessage(ownerId, waMessage) {
     timestamp,
   });
 
-  await storeMessage({ owner: ownerId, contact, waMessage, direction: "inbound", type, text, timestamp });
+  await storeMessage({
+    owner: ownerId,
+    contact,
+    waMessage,
+    direction: "inbound",
+    type,
+    text,
+    timestamp,
+    intentSignal: hasIntentSignal(text),
+  });
 }
 
 export async function logOutboundMessage(ownerId, waMessage) {

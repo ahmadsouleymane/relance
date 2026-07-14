@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     phone: { type: String, trim: true },
     passwordHash: { type: String, required: true },
+    storeSlug: { type: String, unique: true, sparse: true, trim: true, lowercase: true },
 
     plan: {
       id: { type: String, enum: ["starter", "pro", "business"], default: "starter" },

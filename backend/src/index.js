@@ -11,6 +11,12 @@ import suggestionsRoutes from "./routes/suggestions.js";
 import statsRoutes from "./routes/stats.js";
 import analyticsRoutes from "./routes/analytics.js";
 import billingRoutes, { webhookRouter } from "./routes/billing.js";
+import uploadsRoutes from "./routes/uploads.js";
+import productsRoutes from "./routes/products.js";
+import publicRoutes from "./routes/public.js";
+import invoicesRoutes from "./routes/invoices.js";
+import digestRoutes from "./routes/digest.js";
+import { scheduleWeeklyDigestJob } from "./jobs/weeklyDigestJob.js";
 import Contact from "./models/Contact.js";
 
 const app = express();
@@ -33,6 +39,11 @@ app.use("/api/suggestions", suggestionsRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/billing", billingRoutes);
+app.use("/api/uploads", uploadsRoutes);
+app.use("/api/products", productsRoutes);
+app.use("/api/public", publicRoutes);
+app.use("/api/invoices", invoicesRoutes);
+app.use("/api/digest", digestRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
@@ -47,6 +58,7 @@ connectDB()
     // defaults only apply on hydration, not inside .aggregate(), so without this
     // the analytics funnel would bucket old contacts under null instead of "nouveau".
     await Contact.updateMany({ status: { $exists: false } }, { $set: { status: "nouveau" } });
+    scheduleWeeklyDigestJob();
     app.listen(port, () => console.log(`[api] listening on :${port}`));
   })
   .catch((err) => {

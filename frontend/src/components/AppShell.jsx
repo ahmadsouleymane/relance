@@ -1,12 +1,14 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-import { IconHome, IconContacts, IconBell, IconLink, IconCard, IconLogout, IconChart } from "./icons.jsx";
+import { IconHome, IconContacts, IconBell, IconLink, IconCard, IconLogout, IconChart, IconBox, IconReceipt } from "./icons.jsx";
 import Logomark from "./Logomark.jsx";
 
 const NAV_ITEMS = [
   { to: "/", label: "Accueil", icon: IconHome, end: true },
   { to: "/contacts", label: "Contacts", icon: IconContacts },
   { to: "/relances", label: "Relances", icon: IconBell },
+  { to: "/catalogue", label: "Catalogue", icon: IconBox },
+  { to: "/factures", label: "Factures", icon: IconReceipt },
   { to: "/analytiques", label: "Analytique", icon: IconChart },
   { to: "/connexion-whatsapp", label: "WhatsApp", icon: IconLink },
   { to: "/abonnement", label: "Abonnement", icon: IconCard },

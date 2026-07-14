@@ -114,6 +114,21 @@ export const IconChart = (p) => (
   </svg>
 );
 
+export const IconBox = (p) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}>
+    <path d="M4 8 12 4l8 4-8 4-8-4Z" />
+    <path d="M4 8v8l8 4 8-4V8" />
+    <path d="M12 12v8" />
+  </svg>
+);
+
+export const IconReceipt = (p) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}>
+    <path d="M6 3.5h12v17l-2.5-1.5-2.5 1.5-2.5-1.5-2.5 1.5-2-1.5v-17Z" />
+    <path d="M9 8.5h6M9 12h6M9 15.5h4" />
+  </svg>
+);
+
 export const IconX = (p) => (
   <svg viewBox="0 0 24 24" {...base} {...p}>
     <path d="M6 6l12 12M18 6 6 18" />

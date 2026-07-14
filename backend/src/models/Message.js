@@ -13,6 +13,7 @@ const messageSchema = new mongoose.Schema(
       default: "text",
     },
     text: { type: String, default: "" },
+    hasIntentSignal: { type: Boolean, default: false }, // inbound only — see config/intentKeywords.js
     timestamp: { type: Date, required: true, index: true },
   },
   { timestamps: true }

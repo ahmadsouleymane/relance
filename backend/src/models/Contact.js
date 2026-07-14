@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { labelFor } from "../services/leadScoring.js";
 
 const contactSchema = new mongoose.Schema(
   {
@@ -20,6 +21,11 @@ const contactSchema = new mongoose.Schema(
 
     messageCount: { type: Number, default: 0 },
 
+    // Recomputed periodically (see jobs/weeklyDigestJob.js) rather than on
+    // every inbound message — it depends on 30-day aggregates, too costly
+    // to recalc synchronously on ingest.
+    leadScore: { type: Number, default: 0, index: true },
+
     status: {
       type: String,
       enum: ["nouveau", "en_negociation", "client", "perdu"],
@@ -33,5 +39,10 @@ const contactSchema = new mongoose.Schema(
 contactSchema.index({ owner: 1, waId: 1 }, { unique: true });
 contactSchema.index({ owner: 1, lastMessageAt: -1 });
 contactSchema.index({ owner: 1, status: 1 });
+
+contactSchema.virtual("leadLabel").get(function () {
+  return labelFor(this.leadScore || 0);
+});
+contactSchema.set("toJSON", { virtuals: true });
 
 export default mongoose.model("Contact", contactSchema);

@@ -1,9 +1,20 @@
 import { Router } from "express";
 import User from "../models/User.js";
 import { signToken, requireAuth } from "../middleware/auth.js";
+import { slugify } from "../utils/slugify.js";
 
 const router = Router();
 const TRIAL_DAYS = 7;
+
+async function uniqueStoreSlug(businessName) {
+  const base = slugify(businessName) || "boutique";
+  let slug = base;
+  let suffix = 1;
+  while (await User.exists({ storeSlug: slug })) {
+    slug = `${base}-${++suffix}`;
+  }
+  return slug;
+}
 
 router.post("/register", async (req, res) => {
   const { businessName, email, phone, password } = req.body;
@@ -21,6 +32,7 @@ router.post("/register", async (req, res) => {
     businessName,
     email,
     phone,
+    storeSlug: await uniqueStoreSlug(businessName),
     plan: {
       id: "starter",
       status: "trialing",
@@ -47,6 +59,19 @@ router.post("/login", async (req, res) => {
 
 router.get("/me", requireAuth, async (req, res) => {
   res.json({ user: req.user, hasActiveAccess: req.user.hasActiveAccess() });
+});
+
+router.patch("/store-slug", requireAuth, async (req, res) => {
+  const { storeSlug } = req.body;
+  const slug = slugify(storeSlug || "");
+  if (!slug) return res.status(400).json({ error: "storeSlug invalide" });
+
+  const taken = await User.exists({ storeSlug: slug, _id: { $ne: req.user._id } });
+  if (taken) return res.status(409).json({ error: "Ce lien de boutique est déjà pris" });
+
+  req.user.storeSlug = slug;
+  await req.user.save();
+  res.json({ user: req.user });
 });
 
 export default router;

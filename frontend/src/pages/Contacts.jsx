@@ -36,6 +36,9 @@ const STATUS_LABEL = {
   perdu: "Perdu",
 };
 
+// "froid" gets no badge — only worth calling out when a lead is worth acting on.
+const LEAD_SCORE_LABEL = { chaud: "Chaud", tiede: "Tiède" };
+
 export default function Contacts() {
   const [contacts, setContacts] = useState(null);
   const [query, setQuery] = useState("");
@@ -101,8 +104,13 @@ export default function Contacts() {
                     {c.lastMessageDirection === "outbound" ? "Toi : " : ""}
                     {c.lastMessagePreview || "—"}
                   </div>
-                  {(c.tags?.length > 0 || c.status) && (
+                  {(c.tags?.length > 0 || c.status || LEAD_SCORE_LABEL[c.leadLabel]) && (
                     <div className="contact-row__tags">
+                      {LEAD_SCORE_LABEL[c.leadLabel] && (
+                        <span className={`pill${c.leadLabel === "chaud" ? " pill--accent" : ""}`} style={{ padding: "2px 8px", fontSize: 10.5 }}>
+                          {LEAD_SCORE_LABEL[c.leadLabel]}
+                        </span>
+                      )}
                       {c.status && c.status !== "nouveau" && (
                         <span className="pill" style={{ padding: "2px 8px", fontSize: 10.5 }}>
                           {STATUS_LABEL[c.status] || c.status}
