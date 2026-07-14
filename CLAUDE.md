@@ -64,6 +64,12 @@ Billing flow (`backend/src/routes/billing.js` + `backend/src/services/geniusPay.
 
 **Webhook body handling is order-sensitive**: in `backend/src/index.js`, `webhookRouter` (raw body, for HMAC verification) is mounted on `/api/billing/webhook` *before* the global `express.json()` middleware. If you reorder this, GeniusPay signature verification breaks because the body would already be parsed/re-serialized JSON instead of the exact signed bytes. Signature check: `HMAC-SHA256(timestamp + "." + rawBody, GENIUSPAY_WEBHOOK_SECRET)`, timing-safe compared in `verifyWebhookSignature`.
 
+### Pipeline status and analytics
+
+`Contact.status` (`nouveau`/`en_negociation`/`client`/`perdu`, default `nouveau`) is a manually-set pipeline stage, independent of the message-derived follow-up fields above — nothing in `messageIngest.js` touches it.
+
+`backend/src/services/analyticsEngine.js` aggregates over `Contact`/`Message` for the `business`-only `analytics` feature: funnel counts by status, top tags, inbound messaging activity by hour/day-of-week (a note in the code points out Abidjan is UTC with no DST, so Mongo's `$hour` in UTC is already local time — don't add timezone conversion), top contacts by `messageCount`, and average response time. Exposed via `GET /api/analytics/summary` and a `GET /api/analytics/contacts.csv` export, both gated by `requireFeature("analytics")`.
+
 ### Auth
 
 Standard JWT-in-header (`Authorization: Bearer <token>`), signed/verified in `backend/src/middleware/auth.js` (`signToken`/`requireAuth`). No refresh tokens — long-lived JWT (`JWT_EXPIRES_IN`, default 30d). `req.user` is a full Mongoose `User` doc set by `requireAuth`, available to every downstream route handler.
