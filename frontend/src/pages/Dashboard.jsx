@@ -1,0 +1,83 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { api } from "../api/client.js";
+import { useAuth } from "../context/AuthContext.jsx";
+import { IconArrowRight, IconBell, IconLink } from "../components/icons.jsx";
+
+export default function Dashboard() {
+  const { user } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [waStatus, setWaStatus] = useState(null);
+
+  useEffect(() => {
+    api.get("/stats/dashboard").then(setStats).catch(() => {});
+    api.get("/whatsapp/status").then(setWaStatus).catch(() => {});
+  }, []);
+
+  const firstName = user?.businessName?.split(/\s+/)[0] || "";
+
+  return (
+    <div className="stack">
+      <div>
+        <div className="eyebrow">Bonjour</div>
+        <h1 className="display-2">{firstName} 👋</h1>
+      </div>
+
+      {waStatus && waStatus.status !== "connected" && (
+        <Link to="/connexion-whatsapp" className="hero-banner" style={{ textDecoration: "none", display: "block" }}>
+          <div className="row" style={{ justifyContent: "space-between" }}>
+            <div>
+              <div className="h2" style={{ color: "var(--paper)" }}>Connecte ton WhatsApp</div>
+              <p style={{ color: "var(--paper)", opacity: 0.75, fontSize: 13, marginTop: 4 }}>
+                Scanne un QR code pour commencer à historiser tes conversations.
+              </p>
+            </div>
+            <IconArrowRight color="var(--accent)" width={22} height={22} style={{ flexShrink: 0 }} />
+          </div>
+        </Link>
+      )}
+
+      <div className="stat-grid">
+        <Stat label="Contacts" value={stats?.totalContacts} />
+        <Stat label="Messages / 7j" value={stats?.messagesLast7d} />
+        <Stat label="Reçus / 7j" value={stats?.inboundLast7d} />
+        <Stat label="Envoyés / 7j" value={stats?.outboundLast7d} />
+      </div>
+
+      {stats?.pendingFollowUps != null && (
+        <Link to="/relances" className="suggestion-card suggestion-card--attention" style={{ textDecoration: "none" }}>
+          <div className="row" style={{ justifyContent: "space-between" }}>
+            <div className="row" style={{ gap: 10 }}>
+              <IconBell width={20} height={20} />
+              <span style={{ fontWeight: 700 }}>
+                {stats.pendingFollowUps} client{stats.pendingFollowUps > 1 ? "s" : ""} à relancer
+              </span>
+            </div>
+            <IconArrowRight width={18} height={18} />
+          </div>
+        </Link>
+      )}
+
+      {stats?.pendingFollowUps == null && (
+        <div className="card row" style={{ justifyContent: "space-between" }}>
+          <div className="row" style={{ gap: 10 }}>
+            <IconLink width={18} height={18} />
+            <span className="text-muted" style={{ fontSize: 13.5 }}>
+              Les suggestions de relance font partie du plan Pro.
+            </span>
+          </div>
+          <Link to="/abonnement" className="btn btn--sm">Voir les plans</Link>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Stat({ label, value }) {
+  return (
+    <div className="stat">
+      <div className="stat__value">{value ?? <span className="skeleton" style={{ display: "inline-block", width: 40, height: 26 }} />}</div>
+      <div className="stat__label">{label}</div>
+    </div>
+  );
+}

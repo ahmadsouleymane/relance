@@ -1,0 +1,81 @@
+/*
+  Design language for Relance — built as its own visual system rather than
+  patterned after another product. Warm paper background, ink-black outlines,
+  one loud accent (orange, echoing the CI flag) for anything that needs
+  attention, and a second signal color ("live") reserved strictly for
+  connection/success state so it always reads as status, never decoration.
+  Hard offset outlines instead of blurred drop shadows. Sora for display
+  type, Manrope for body, JetBrains Mono for anything numeric.
+*/
+
+:root {
+  /* --- color --- */
+  --ink: #17140f;
+  --ink-soft: #4a4438;
+  --paper: #faf6ee;
+  --paper-raised: #ffffff;
+  --paper-sunken: #f1ead9;
+
+  --accent: #ff6a1a;
+  --accent-ink: #7a2e00;
+  --accent-tint: #ffe4cf;
+
+  --live: #1f9d6c;
+  --live-ink: #0b4a32;
+  --live-tint: #d9f2e6;
+
+  --danger: #e0402b;
+  --danger-tint: #fbdfd8;
+
+  --line: #17140f;
+  --line-soft: #e4dcc8;
+
+  /* --- type --- */
+  --font-display: "Sora", "Manrope", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* --- shape --- */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --shadow-sticker: 4px 4px 0 var(--ink);
+  --shadow-sticker-sm: 2px 2px 0 var(--ink);
+  --shadow-lift: 0 10px 30px -12px rgba(23, 20, 15, 0.35);
+
+  /* --- spacing scale --- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  --nav-h: 64px;
+  --topbar-h: 56px;
+  --max-content: 720px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #f5efe2;
+    --ink-soft: #cfc6b3;
+    --paper: #17140f;
+    --paper-raised: #211d16;
+    --paper-sunken: #0f0d09;
+
+    --accent-tint: #4a2510;
+    --live-tint: #0d3320;
+    --danger-tint: #431912;
+
+    --line: #f5efe2;
+    --line-soft: #38321f;
+
+    --shadow-sticker: 4px 4px 0 var(--ink);
+    --shadow-sticker-sm: 2px 2px 0 var(--ink);
+  }
+}
