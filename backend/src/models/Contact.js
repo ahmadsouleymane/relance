@@ -19,11 +19,19 @@ const contactSchema = new mongoose.Schema(
     lastFollowUpAt: { type: Date },
 
     messageCount: { type: Number, default: 0 },
+
+    status: {
+      type: String,
+      enum: ["nouveau", "en_negociation", "client", "perdu"],
+      default: "nouveau",
+      index: true,
+    },
   },
   { timestamps: true }
 );
 
 contactSchema.index({ owner: 1, waId: 1 }, { unique: true });
 contactSchema.index({ owner: 1, lastMessageAt: -1 });
+contactSchema.index({ owner: 1, status: 1 });
 
 export default mongoose.model("Contact", contactSchema);

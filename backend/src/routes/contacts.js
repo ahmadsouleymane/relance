@@ -6,9 +6,11 @@ import { requireAuth } from "../middleware/auth.js";
 const router = Router();
 router.use(requireAuth);
 
-// List contacts, most recent conversation first. Optional ?q= search, ?tag= filter.
+const STATUSES = ["nouveau", "en_negociation", "client", "perdu"];
+
+// List contacts, most recent conversation first. Optional ?q= search, ?tag= filter, ?status= filter.
 router.get("/", async (req, res) => {
-  const { q, tag } = req.query;
+  const { q, tag, status } = req.query;
   const filter = { owner: req.user._id };
 
   if (q) {
@@ -16,6 +18,7 @@ router.get("/", async (req, res) => {
     filter.$or = [{ displayName: rx }, { pushName: rx }, { phoneNumber: rx }];
   }
   if (tag) filter.tags = tag;
+  if (status) filter.status = status;
 
   const contacts = await Contact.find(filter)
     .sort({ lastMessageAt: -1 })
@@ -32,10 +35,20 @@ router.get("/:id", async (req, res) => {
 });
 
 router.patch("/:id", async (req, res) => {
-  const { displayName, notes } = req.body;
+  const { displayName, notes, status } = req.body;
+  if (status !== undefined && !STATUSES.includes(status)) {
+    return res.status(400).json({ error: "Statut invalide" });
+  }
+
   const contact = await Contact.findOneAndUpdate(
     { _id: req.params.id, owner: req.user._id },
-    { $set: { ...(displayName !== undefined ? { displayName } : {}), ...(notes !== undefined ? { notes } : {}) } },
+    {
+      $set: {
+        ...(displayName !== undefined ? { displayName } : {}),
+        ...(notes !== undefined ? { notes } : {}),
+        ...(status !== undefined ? { status } : {}),
+      },
+    },
     { new: true }
   ).populate("tags");
   if (!contact) return res.status(404).json({ error: "Contact introuvable" });

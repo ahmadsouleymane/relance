@@ -21,19 +21,38 @@ function relativeTime(dateStr) {
   return new Date(dateStr).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit" });
 }
 
+const STATUS_FILTERS = [
+  { key: "", label: "Tous" },
+  { key: "nouveau", label: "Nouveau" },
+  { key: "en_negociation", label: "En négociation" },
+  { key: "client", label: "Client" },
+  { key: "perdu", label: "Perdu" },
+];
+
+const STATUS_LABEL = {
+  nouveau: "Nouveau",
+  en_negociation: "En négociation",
+  client: "Client",
+  perdu: "Perdu",
+};
+
 export default function Contacts() {
   const [contacts, setContacts] = useState(null);
   const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     const handle = setTimeout(() => {
-      const qs = query ? `?q=${encodeURIComponent(query)}` : "";
+      const params = new URLSearchParams();
+      if (query) params.set("q", query);
+      if (status) params.set("status", status);
+      const qs = params.toString() ? `?${params.toString()}` : "";
       api.get(`/contacts${qs}`).then((d) => setContacts(d.contacts)).catch(() => setContacts([]));
     }, 250);
     return () => clearTimeout(handle);
-  }, [query]);
+  }, [query, status]);
 
-  const isEmpty = contacts && contacts.length === 0 && !query;
+  const isEmpty = contacts && contacts.length === 0 && !query && !status;
 
   return (
     <div className="stack">
@@ -42,6 +61,20 @@ export default function Contacts() {
       <div className="search-bar">
         <IconSearch width={18} height={18} />
         <input placeholder="Chercher un nom, un numéro…" value={query} onChange={(e) => setQuery(e.target.value)} />
+      </div>
+
+      <div className="row" style={{ flexWrap: "wrap", gap: 6 }}>
+        {STATUS_FILTERS.map((f) => (
+          <button
+            key={f.key}
+            type="button"
+            className="pill"
+            style={{ opacity: status === f.key ? 1 : 0.5, cursor: "pointer" }}
+            onClick={() => setStatus(f.key)}
+          >
+            {f.label}
+          </button>
+        ))}
       </div>
 
       {!contacts && <ListSkeleton />}
@@ -68,9 +101,14 @@ export default function Contacts() {
                     {c.lastMessageDirection === "outbound" ? "Toi : " : ""}
                     {c.lastMessagePreview || "—"}
                   </div>
-                  {c.tags?.length > 0 && (
+                  {(c.tags?.length > 0 || c.status) && (
                     <div className="contact-row__tags">
-                      {c.tags.map((t) => (
+                      {c.status && c.status !== "nouveau" && (
+                        <span className="pill" style={{ padding: "2px 8px", fontSize: 10.5 }}>
+                          {STATUS_LABEL[c.status] || c.status}
+                        </span>
+                      )}
+                      {c.tags?.map((t) => (
                         <span key={t._id} className="tag-chip" style={{ padding: "2px 8px", fontSize: 10.5 }}>
                           <span className="tag-swatch" style={{ background: t.color }} />
                           {t.label}

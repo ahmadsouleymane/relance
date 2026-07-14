@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api/client.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import { IconArrowRight, IconBell, IconLink } from "../components/icons.jsx";
+import { IconArrowRight, IconBell, IconLink, IconChart } from "../components/icons.jsx";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -64,6 +64,30 @@ export default function Dashboard() {
             <IconLink width={18} height={18} />
             <span className="text-muted" style={{ fontSize: 13.5 }}>
               Les suggestions de relance font partie du plan Pro.
+            </span>
+          </div>
+          <Link to="/abonnement" className="btn btn--sm">Voir les plans</Link>
+        </div>
+      )}
+
+      {stats?.analyticsEnabled && (
+        <Link to="/analytiques" className="suggestion-card suggestion-card--info" style={{ textDecoration: "none" }}>
+          <div className="row" style={{ justifyContent: "space-between" }}>
+            <div className="row" style={{ gap: 10 }}>
+              <IconChart width={20} height={20} />
+              <span style={{ fontWeight: 700 }}>Voir mes statistiques</span>
+            </div>
+            <IconArrowRight width={18} height={18} />
+          </div>
+        </Link>
+      )}
+
+      {stats && !stats.analyticsEnabled && (
+        <div className="card row" style={{ justifyContent: "space-between" }}>
+          <div className="row" style={{ gap: 10 }}>
+            <IconChart width={18} height={18} />
+            <span className="text-muted" style={{ fontSize: 13.5 }}>
+              Les statistiques font partie du plan Business.
             </span>
           </div>
           <Link to="/abonnement" className="btn btn--sm">Voir les plans</Link>

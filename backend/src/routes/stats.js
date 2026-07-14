@@ -29,6 +29,7 @@ router.get("/dashboard", requireAuth, async (req, res) => {
     inboundLast7d,
     outboundLast7d,
     pendingFollowUps,
+    analyticsEnabled: planHasFeature(req.user.plan.id, "analytics"),
   });
 });
 

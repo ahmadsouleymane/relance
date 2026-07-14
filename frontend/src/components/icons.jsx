@@ -107,6 +107,13 @@ export const IconPlus = (p) => (
   </svg>
 );
 
+export const IconChart = (p) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}>
+    <path d="M4 20V10M12 20V4M20 20v-7" />
+    <path d="M3 20h18" />
+  </svg>
+);
+
 export const IconX = (p) => (
   <svg viewBox="0 0 24 24" {...base} {...p}>
     <path d="M6 6l12 12M18 6 6 18" />

@@ -9,7 +9,9 @@ import contactsRoutes from "./routes/contacts.js";
 import tagsRoutes from "./routes/tags.js";
 import suggestionsRoutes from "./routes/suggestions.js";
 import statsRoutes from "./routes/stats.js";
+import analyticsRoutes from "./routes/analytics.js";
 import billingRoutes, { webhookRouter } from "./routes/billing.js";
+import Contact from "./models/Contact.js";
 
 const app = express();
 
@@ -29,6 +31,7 @@ app.use("/api/contacts", contactsRoutes);
 app.use("/api/tags", tagsRoutes);
 app.use("/api/suggestions", suggestionsRoutes);
 app.use("/api/stats", statsRoutes);
+app.use("/api/analytics", analyticsRoutes);
 app.use("/api/billing", billingRoutes);
 
 app.use((err, _req, res, _next) => {
@@ -39,7 +42,11 @@ app.use((err, _req, res, _next) => {
 const port = process.env.PORT || 4000;
 
 connectDB()
-  .then(() => {
+  .then(async () => {
+    // Backfill for contacts created before the `status` field existed — Mongoose
+    // defaults only apply on hydration, not inside .aggregate(), so without this
+    // the analytics funnel would bucket old contacts under null instead of "nouveau".
+    await Contact.updateMany({ status: { $exists: false } }, { $set: { status: "nouveau" } });
     app.listen(port, () => console.log(`[api] listening on :${port}`));
   })
   .catch((err) => {

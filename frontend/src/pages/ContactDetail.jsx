@@ -20,6 +20,13 @@ function timeLabel(date) {
   return new Date(date).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 }
 
+const STATUS_META = {
+  nouveau: { label: "Nouveau", pillClass: "pill" },
+  en_negociation: { label: "En négociation", pillClass: "pill pill--accent" },
+  client: { label: "Client", pillClass: "pill pill--live" },
+  perdu: { label: "Perdu", pillClass: "pill pill--danger" },
+};
+
 export default function ContactDetail() {
   const { id } = useParams();
   const [contact, setContact] = useState(null);
@@ -51,6 +58,11 @@ export default function ContactDetail() {
 
   const dismissFollowUp = async () => {
     await api.post(`/contacts/${id}/follow-up/dismiss`, {});
+    load();
+  };
+
+  const setStatus = async (status) => {
+    await api.patch(`/contacts/${id}`, { status });
     load();
   };
 
@@ -96,6 +108,26 @@ export default function ContactDetail() {
           </button>
         </div>
       )}
+
+      <div className="card card--tight">
+        <span className="eyebrow">Statut</span>
+        <div className="row" style={{ flexWrap: "wrap", gap: 6, marginTop: 10 }}>
+          {Object.entries(STATUS_META).map(([key, meta]) => {
+            const active = contact.status === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                className={meta.pillClass}
+                style={{ opacity: active ? 1 : 0.5, cursor: "pointer", border: "1.5px solid var(--line)" }}
+                onClick={() => setStatus(key)}
+              >
+                {meta.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       <div className="card card--tight">
         <div className="row row--between" style={{ marginBottom: 10 }}>

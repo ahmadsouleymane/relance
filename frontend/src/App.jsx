@@ -9,6 +9,7 @@ import ContactDetail from "./pages/ContactDetail.jsx";
 import Tags from "./pages/Tags.jsx";
 import Connect from "./pages/Connect.jsx";
 import Relances from "./pages/Relances.jsx";
+import Analytics from "./pages/Analytics.jsx";
 import Billing from "./pages/Billing.jsx";
 
 function PrivateArea() {
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/contacts/tags" element={<Tags />} />
         <Route path="/contacts/:id" element={<ContactDetail />} />
         <Route path="/relances" element={<Relances />} />
+        <Route path="/analytiques" element={<Analytics />} />
         <Route path="/connexion-whatsapp" element={<Connect />} />
         <Route path="/abonnement" element={<Billing />} />
       </Route>
