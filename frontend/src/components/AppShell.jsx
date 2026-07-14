@@ -49,26 +49,18 @@ export default function AppShell() {
         </div>
       </header>
 
-      <div className="app-body">
-        <nav className="app-sidebar">
-          <div className="eyebrow" style={{ marginBottom: 18, paddingLeft: 12 }}>Menu</div>
-          {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={({ isActive }) => `sidebar-link${isActive ? " is-active" : ""}`}
-            >
-              <Icon />
-              {label}
-            </NavLink>
-          ))}
-        </nav>
+      <nav className="tab-bar">
+        {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+          <NavLink key={to} to={to} end={end} className={({ isActive }) => `tab-bar__link${isActive ? " is-active" : ""}`}>
+            <Icon />
+            {label}
+          </NavLink>
+        ))}
+      </nav>
 
-        <main className="app-main">
-          <Outlet />
-        </main>
-      </div>
+      <main className="app-main">
+        <Outlet />
+      </main>
 
       <nav className="bottom-nav">
         {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
