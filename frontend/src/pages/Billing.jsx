@@ -89,7 +89,7 @@ export default function Billing() {
         </div>
       )}
 
-      <div className="plan-toggle">
+      <div className="segmented">
         {Object.entries(cycles).map(([key]) => (
           <button key={key} type="button" className={cycle === key ? "is-active" : ""} onClick={() => setCycle(key)}>
             {CYCLE_LABEL[key]}
