@@ -173,9 +173,9 @@ export default function Catalog() {
       )}
 
       {products?.length > 0 && (
-        <div className="row" style={{ flexWrap: "wrap", gap: 12 }}>
+        <div className="product-grid">
           {products.map((p) => (
-            <div key={p._id} className="card card--tight" style={{ width: 220 }}>
+            <div key={p._id} className="card card--tight">
               {p.photos?.[0] ? (
                 <img src={p.photos[0]} alt="" style={{ width: "100%", height: 130, objectFit: "cover", borderRadius: 10, marginBottom: 8 }} />
               ) : (
