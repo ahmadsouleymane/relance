@@ -4,11 +4,10 @@ import AppShell from "./components/AppShell.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Apercu from "./pages/Apercu.jsx";
-import Contacts from "./pages/Contacts.jsx";
+import Conversations from "./pages/Conversations.jsx";
 import ContactDetail from "./pages/ContactDetail.jsx";
 import Tags from "./pages/Tags.jsx";
 import Connect from "./pages/Connect.jsx";
-import Relances from "./pages/Relances.jsx";
 import Billing from "./pages/Billing.jsx";
 import Catalog from "./pages/Catalog.jsx";
 import Storefront from "./pages/Storefront.jsx";
@@ -50,9 +49,8 @@ export default function App() {
 
       <Route element={<PrivateArea />}>
         <Route path="/apercu" element={<Apercu />} />
-        <Route path="/relances" element={<Relances />} />
 
-        <Route path="/conversations" element={<Contacts />} />
+        <Route path="/conversations" element={<Conversations />} />
         <Route path="/conversations/tags" element={<Tags />} />
         <Route path="/conversations/:id" element={<ContactDetail />} />
 
