@@ -98,16 +98,19 @@ class WhatsAppManager {
         // Safety net: a brand-new number (or a flaky sync) may never send a
         // final history chunk — don't leave the UI stuck on "importing"
         // forever if that happens.
-        setTimeout(async () => {
+        const historySyncTimeout = setTimeout(async () => {
           const current = this.sessions.get(key);
           if (current?.historySync?.status === "syncing") {
             current.historySync.status = "complete";
             await User.findByIdAndUpdate(key, { "whatsapp.historySyncStatus": "complete" }).catch(() => {});
           }
         }, 2 * 60 * 1000);
+        if (session) session.historySyncTimeout = historySyncTimeout;
       }
 
       if (connection === "close") {
+        if (session?.historySyncTimeout) clearTimeout(session.historySyncTimeout);
+
         const statusCode = lastDisconnect?.error?.output?.statusCode;
         const loggedOut = statusCode === DisconnectReason.loggedOut;
 
@@ -171,6 +174,7 @@ class WhatsAppManager {
     if (session?.sock) {
       await session.sock.logout().catch(() => {});
     }
+    if (session?.historySyncTimeout) clearTimeout(session.historySyncTimeout);
     this.sessions.delete(key);
     fs.rmSync(this.sessionDir(key), { recursive: true, force: true });
     await User.findByIdAndUpdate(key, {
