@@ -137,4 +137,37 @@ export async function logOutboundMessage(ownerId, waMessage) {
   }
 }
 
+export async function logHistoryMessages(ownerId, waMessages) {
+  let insertedCount = 0;
+
+  for (const waMessage of waMessages) {
+    const waId = waMessage.key?.remoteJid;
+    if (!isTrackableChat(waId)) continue;
+
+    const { type, text } = extractContent(waMessage);
+    const timestamp = new Date(Number(waMessage.messageTimestamp) * 1000);
+    const direction = waMessage.key.fromMe ? "outbound" : "inbound";
+    const pushName = direction === "inbound" ? waMessage.pushName : null;
+
+    const contact = await ensureContact({ owner: ownerId, waId, pushName });
+    const inserted = await storeMessage({
+      owner: ownerId,
+      contact,
+      waMessage,
+      direction,
+      type,
+      text,
+      timestamp,
+      intentSignal: direction === "inbound" ? hasIntentSignal(text) : false,
+    });
+
+    if (inserted) {
+      insertedCount += 1;
+      await applyContactActivity({ contact, direction, text, timestamp });
+    }
+  }
+
+  return insertedCount;
+}
+
 export { isTrackableChat };

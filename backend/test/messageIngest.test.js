@@ -5,7 +5,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 
 import Contact from "../src/models/Contact.js";
 import Message from "../src/models/Message.js";
-import { logInboundMessage, logOutboundMessage, isTrackableChat } from "../src/services/messageIngest.js";
+import { logInboundMessage, logOutboundMessage, isTrackableChat, logHistoryMessages } from "../src/services/messageIngest.js";
 
 let mongod;
 
@@ -87,4 +87,50 @@ test("groups and status broadcasts are skipped", async () => {
 
   assert.equal(await Contact.countDocuments({ owner: OWNER }), 0);
   assert.equal(await Message.countDocuments({ owner: OWNER }), 0);
+});
+
+test("logHistoryMessages ingests a batch and returns the inserted count", async () => {
+  const batch = [
+    waMessage({ id: "H1", secondsAgo: 300, text: "Bonjour" }),
+    waMessage({ id: "H2", secondsAgo: 200, fromMe: true, text: "Bonjour, dispo demain" }),
+    waMessage({ id: "H3", secondsAgo: 100, text: "Merci" }),
+  ];
+
+  const inserted = await logHistoryMessages(OWNER, batch);
+
+  assert.equal(inserted, 3);
+  const contact = await Contact.findOne({ owner: OWNER });
+  assert.equal(contact.messageCount, 3);
+  assert.equal(contact.lastMessageDirection, "inbound"); // H3, the most recent, is inbound
+  assert.equal(contact.lastMessagePreview, "Merci");
+  assert.ok(contact.lastFollowUpAt); // set by H2
+});
+
+test("logHistoryMessages does not regress lastMessageAt when batches arrive out of order", async () => {
+  await logHistoryMessages(OWNER, [waMessage({ id: "NEW", secondsAgo: 10, text: "Message récent" })]);
+  await logHistoryMessages(OWNER, [waMessage({ id: "OLD", secondsAgo: 5000, text: "Message ancien" })]);
+
+  const contact = await Contact.findOne({ owner: OWNER });
+  assert.equal(contact.lastMessagePreview, "Message récent");
+  assert.equal(contact.messageCount, 2);
+});
+
+test("logHistoryMessages does not double-count a message already seen live", async () => {
+  const msg = waMessage({ id: "LIVE-1", text: "Déjà reçu en direct" });
+  await logInboundMessage(OWNER, msg);
+  const inserted = await logHistoryMessages(OWNER, [msg]);
+
+  assert.equal(inserted, 0);
+  const contact = await Contact.findOne({ owner: OWNER });
+  assert.equal(contact.messageCount, 1);
+});
+
+test("logHistoryMessages skips groups and status broadcasts", async () => {
+  const inserted = await logHistoryMessages(OWNER, [
+    waMessage({ id: "GH1", remoteJid: "12345-6789@g.us" }),
+    waMessage({ id: "SH1", remoteJid: "status@broadcast" }),
+  ]);
+
+  assert.equal(inserted, 0);
+  assert.equal(await Contact.countDocuments({ owner: OWNER }), 0);
 });
