@@ -28,7 +28,7 @@ export default function Dashboard() {
       </div>
 
       {waStatus && waStatus.status !== "connected" && (
-        <Link to="/connexion-whatsapp" className="briefing-alert">
+        <Link to="/reglages/whatsapp" className="briefing-alert">
           <div>
             <div className="h2">WhatsApp déconnecté</div>
             <p className="text-muted" style={{ fontSize: 13, marginTop: 4 }}>Scanne le QR pour démarrer.</p>
@@ -81,7 +81,7 @@ export default function Dashboard() {
               Les suggestions de relance font partie du plan Pro.
             </span>
           </div>
-          <Link to="/abonnement" className="btn btn--sm">Voir les plans</Link>
+          <Link to="/reglages/abonnement" className="btn btn--sm">Voir les plans</Link>
         </div>
       )}
 
@@ -105,7 +105,7 @@ export default function Dashboard() {
               Les statistiques font partie du plan Business.
             </span>
           </div>
-          <Link to="/abonnement" className="btn btn--sm">Voir les plans</Link>
+          <Link to="/reglages/abonnement" className="btn btn--sm">Voir les plans</Link>
         </div>
       )}
 

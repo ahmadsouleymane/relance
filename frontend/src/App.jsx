@@ -16,6 +16,8 @@ import Storefront from "./pages/Storefront.jsx";
 import Invoices from "./pages/Invoices.jsx";
 import InvoicePublic from "./pages/InvoicePublic.jsx";
 import Landing from "./pages/Landing.jsx";
+import Vendre from "./pages/Vendre.jsx";
+import Reglages from "./pages/Reglages.jsx";
 
 function PrivateArea() {
   const { user, loading } = useAuth();
@@ -27,14 +29,14 @@ function PrivateArea() {
 function PublicOnly({ children }) {
   const { user, loading } = useAuth();
   if (loading) return null;
-  if (user) return <Navigate to="/tableau-de-bord" replace />;
+  if (user) return <Navigate to="/apercu" replace />;
   return children;
 }
 
 function Home() {
   const { user, loading } = useAuth();
   if (loading) return null;
-  if (user) return <Navigate to="/tableau-de-bord" replace />;
+  if (user) return <Navigate to="/apercu" replace />;
   return <Landing />;
 }
 
@@ -48,16 +50,24 @@ export default function App() {
       <Route path="/f/:publicToken" element={<InvoicePublic />} />
 
       <Route element={<PrivateArea />}>
-        <Route path="/tableau-de-bord" element={<Dashboard />} />
-        <Route path="/contacts" element={<Contacts />} />
-        <Route path="/contacts/tags" element={<Tags />} />
-        <Route path="/contacts/:id" element={<ContactDetail />} />
+        <Route path="/apercu" element={<Dashboard />} />
         <Route path="/relances" element={<Relances />} />
-        <Route path="/catalogue" element={<Catalog />} />
-        <Route path="/factures" element={<Invoices />} />
         <Route path="/analytiques" element={<Analytics />} />
-        <Route path="/connexion-whatsapp" element={<Connect />} />
-        <Route path="/abonnement" element={<Billing />} />
+
+        <Route path="/conversations" element={<Contacts />} />
+        <Route path="/conversations/tags" element={<Tags />} />
+        <Route path="/conversations/:id" element={<ContactDetail />} />
+
+        <Route path="/vendre" element={<Vendre />}>
+          <Route index element={<Navigate to="catalogue" replace />} />
+          <Route path="catalogue" element={<Catalog />} />
+          <Route path="factures" element={<Invoices />} />
+        </Route>
+
+        <Route path="/reglages" element={<Reglages />}>
+          <Route path="whatsapp" element={<Connect />} />
+          <Route path="abonnement" element={<Billing />} />
+        </Route>
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

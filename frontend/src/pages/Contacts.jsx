@@ -93,7 +93,7 @@ export default function Contacts() {
         <ul className="card--tight" style={{ border: "1.5px solid var(--line)", borderRadius: 20, background: "var(--paper-raised)" }}>
           {contacts.map((c) => (
             <li key={c._id}>
-              <Link to={`/contacts/${c._id}`} className="contact-row">
+              <Link to={`/conversations/${c._id}`} className="contact-row">
                 <div className="avatar">{initialsOf(c.displayName)}</div>
                 <div className="contact-row__body">
                   <div className="contact-row__top">

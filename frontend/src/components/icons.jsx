@@ -134,3 +134,10 @@ export const IconX = (p) => (
     <path d="M6 6l12 12M18 6 6 18" />
   </svg>
 );
+
+export const IconSettings = (p) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}>
+    <circle cx="12" cy="12" r="3.2" />
+    <path d="M12 3.5v2.6M12 17.9v2.6M20.5 12h-2.6M6.1 12H3.5M17.7 6.3l-1.8 1.8M8.1 15.9l-1.8 1.8M17.7 17.7l-1.8-1.8M8.1 8.1 6.3 6.3" />
+  </svg>
+);

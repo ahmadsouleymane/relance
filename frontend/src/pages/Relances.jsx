@@ -39,7 +39,7 @@ export default function Relances() {
         <div className="empty">
           <div className="h2">Fonctionnalité Pro</div>
           <p style={{ marginBottom: 20 }}>Passe au plan Pro pour voir quels clients attendent une réponse.</p>
-          <Link to="/abonnement" className="btn btn--primary">Voir les plans</Link>
+          <Link to="/reglages/abonnement" className="btn btn--primary">Voir les plans</Link>
         </div>
       </div>
     );
@@ -88,7 +88,7 @@ export default function Relances() {
                 </p>
               )}
               <div className="row" style={{ gap: 8 }}>
-                <Link to={`/contacts/${contact._id}`} className="btn btn--sm btn--ghost" style={{ flex: 1 }}>
+                <Link to={`/conversations/${contact._id}`} className="btn btn--sm btn--ghost" style={{ flex: 1 }}>
                   Voir la conversation
                 </Link>
                 <button className="btn btn--sm" onClick={() => dismiss(contact._id)}>

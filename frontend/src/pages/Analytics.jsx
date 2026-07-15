@@ -61,7 +61,7 @@ export default function Analytics() {
         <div className="empty">
           <div className="h2">Fonctionnalité Business</div>
           <p style={{ marginBottom: 20 }}>Passe au plan Business pour débloquer les statistiques.</p>
-          <Link to="/abonnement" className="btn btn--primary">Voir les plans</Link>
+          <Link to="/reglages/abonnement" className="btn btn--primary">Voir les plans</Link>
         </div>
       </div>
     );

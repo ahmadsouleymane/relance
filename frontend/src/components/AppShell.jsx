@@ -1,17 +1,13 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-import { IconHome, IconContacts, IconBell, IconLink, IconCard, IconLogout, IconChart, IconBox, IconReceipt } from "./icons.jsx";
+import { IconHome, IconContacts, IconBox, IconSettings, IconLogout } from "./icons.jsx";
 import Logomark from "./Logomark.jsx";
 
 const NAV_ITEMS = [
-  { to: "/tableau-de-bord", label: "Accueil", icon: IconHome, end: true },
-  { to: "/contacts", label: "Contacts", icon: IconContacts },
-  { to: "/relances", label: "Relances", icon: IconBell },
-  { to: "/catalogue", label: "Catalogue", icon: IconBox },
-  { to: "/factures", label: "Factures", icon: IconReceipt },
-  { to: "/analytiques", label: "Analytique", icon: IconChart },
-  { to: "/connexion-whatsapp", label: "WhatsApp", icon: IconLink },
-  { to: "/abonnement", label: "Abonnement", icon: IconCard },
+  { to: "/apercu", label: "Aperçu", icon: IconHome },
+  { to: "/conversations", label: "Conversations", icon: IconContacts },
+  { to: "/vendre", label: "Vendre", icon: IconBox },
+  { to: "/reglages", label: "Réglages", icon: IconSettings },
 ];
 
 function initialsOf(name = "") {
@@ -50,8 +46,8 @@ export default function AppShell() {
       </header>
 
       <nav className="tab-bar">
-        {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
-          <NavLink key={to} to={to} end={end} className={({ isActive }) => `tab-bar__link${isActive ? " is-active" : ""}`}>
+        {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+          <NavLink key={to} to={to} className={({ isActive }) => `tab-bar__link${isActive ? " is-active" : ""}`}>
             <Icon />
             {label}
           </NavLink>
@@ -63,11 +59,10 @@ export default function AppShell() {
       </main>
 
       <nav className="bottom-nav">
-        {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+        {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
-            end={end}
             className={({ isActive }) => `bottom-nav__item${isActive ? " is-active" : ""}`}
             style={{ position: "relative" }}
           >
