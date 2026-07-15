@@ -33,20 +33,32 @@ function BarList({ items, emptyLabel = "Pas encore de données." }) {
   );
 }
 
+function Histogram({ items, emptyLabel = "Pas encore de données." }) {
+  if (items.length === 0) return <p className="text-muted" style={{ fontSize: 13 }}>{emptyLabel}</p>;
+  const max = Math.max(...items.map((i) => i.count), 1);
+  return (
+    <div className="histogram">
+      {items.map((item) => (
+        <div key={item.key} className="histogram__col">
+          <span className="mono" style={{ fontSize: 10.5, color: "var(--ink-soft)" }}>{item.count}</span>
+          <div className="histogram__bar" style={{ height: `${Math.max((item.count / max) * 100, 3)}%` }} />
+          <span className="histogram__label">{item.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function Apercu() {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [waStatus, setWaStatus] = useState(null);
-  const [digest, setDigest] = useState(null);
   const [analytics, setAnalytics] = useState(null);
   const [analyticsLocked, setAnalyticsLocked] = useState(false);
-  const [exporting, setExporting] = useState(false);
-  const [exportError, setExportError] = useState("");
 
   useEffect(() => {
     api.get("/stats/dashboard").then(setStats).catch(() => {});
     api.get("/whatsapp/status").then(setWaStatus).catch(() => {});
-    api.get("/digest/weekly").then(setDigest).catch(() => {});
     api
       .get("/analytics/summary")
       .then(setAnalytics)
@@ -55,22 +67,7 @@ export default function Apercu() {
       });
   }, []);
 
-  const exportCsv = async () => {
-    setExporting(true);
-    setExportError("");
-    try {
-      await api.download("/analytics/contacts.csv", "contacts.csv");
-    } catch (err) {
-      setExportError(err.message);
-    } finally {
-      setExporting(false);
-    }
-  };
-
-  const topHours = analytics
-    ? [...analytics.activity.byHour].sort((a, b) => b.count - a.count).slice(0, 6).map((h) => ({ key: h.hour, label: `${h.hour}h`, count: h.count }))
-    : [];
-  const byDay = analytics ? analytics.activity.byDay.map((d) => ({ key: d.day, label: d.day, count: d.count })) : [];
+  const byDay = analytics ? analytics.activity.byDay.map((d) => ({ key: d.day, label: d.day.slice(0, 3), count: d.count })) : [];
   const topTags = analytics ? analytics.topTags.map((t) => ({ key: t.label, label: t.label, count: t.count })) : [];
   const topContacts = analytics ? analytics.topContacts.map((c) => ({ key: c._id, label: c.displayName, count: c.messageCount })) : [];
 
@@ -91,29 +88,7 @@ export default function Apercu() {
         </Link>
       )}
 
-      {digest && (
-        <div className="card">
-          <span className="eyebrow">Cette semaine</span>
-          <div className="stack--sm" style={{ marginTop: 10 }}>
-            <div className="row row--between">
-              <span style={{ fontSize: 13.5 }}>Leads chauds</span>
-              <span className="mono" style={{ fontWeight: 600 }}>{digest.hotLeads.length}</span>
-            </div>
-            <div className="row row--between">
-              <span style={{ fontSize: 13.5 }}>Factures payées</span>
-              <span className="mono" style={{ fontWeight: 600 }}>
-                {digest.paidInvoicesCount} · {formatFcfa(digest.paidInvoicesTotal)}
-              </span>
-            </div>
-            <div className="row row--between">
-              <span style={{ fontSize: 13.5 }}>Messages en attente</span>
-              <span className="mono" style={{ fontWeight: 600 }}>{digest.pendingFollowUpsCount}</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {stats?.pendingFollowUps != null && (
+      {stats?.pendingFollowUps != null && stats.pendingFollowUps > 0 && (
         <Link to="/conversations?filtre=a-relancer" className="suggestion-card suggestion-card--attention" style={{ textDecoration: "none" }}>
           <div className="row" style={{ justifyContent: "space-between" }}>
             <div className="row" style={{ gap: 10 }}>
@@ -139,22 +114,23 @@ export default function Apercu() {
         </div>
       )}
 
+      <div className="row" style={{ gap: 12, flexWrap: "wrap" }}>
+        <div className="stat" style={{ flex: "1 1 140px" }}>
+          <div className="stat__value">{stats ? formatFcfa(stats.monthlyRevenue) : "—"}</div>
+          <div className="stat__label">Chiffre d'affaires ce mois</div>
+        </div>
+        <div className="stat" style={{ flex: "1 1 140px" }}>
+          <div className="stat__value">{stats?.newContactsToday ?? "—"}</div>
+          <div className="stat__label">Nouveaux clients aujourd'hui</div>
+        </div>
+      </div>
+
       <div className="stat-strip">
         <StatStripItem label="Contacts" value={stats?.totalContacts} />
         <StatStripItem label="Messages / 7j" value={stats?.messagesLast7d} />
         <StatStripItem label="Reçus / 7j" value={stats?.inboundLast7d} />
         <StatStripItem label="Envoyés / 7j" value={stats?.outboundLast7d} />
       </div>
-
-      <div className="row row--between" style={{ marginTop: 8 }}>
-        <div className="eyebrow">Statistiques</div>
-        {analytics && (
-          <button className="btn btn--sm" onClick={exportCsv} disabled={exporting}>
-            {exporting ? "Export…" : "Exporter en CSV"}
-          </button>
-        )}
-      </div>
-      {exportError && <p className="field-error">{exportError}</p>}
 
       {analyticsLocked && (
         <div className="card row" style={{ justifyContent: "space-between" }}>
@@ -183,24 +159,11 @@ export default function Apercu() {
           </div>
 
           <div className="card card--tight">
-            <span className="eyebrow">Temps de réponse moyen</span>
-            {analytics.avgResponseTime.sampleSize > 0 ? (
-              <>
-                <div className="stat__value" style={{ marginTop: 8 }}>{analytics.avgResponseTime.avgMinutes} min</div>
-                <p className="text-muted" style={{ fontSize: 12, marginTop: 4 }}>
-                  Basé sur {analytics.avgResponseTime.sampleSize} réponse{analytics.avgResponseTime.sampleSize > 1 ? "s" : ""} (90 derniers jours)
-                </p>
-              </>
-            ) : (
-              <p className="text-muted" style={{ fontSize: 13, marginTop: 8 }}>—</p>
-            )}
-          </div>
-
-          <div className="card card--tight">
-            <span className="eyebrow">Tags les plus utilisés</span>
-            <div style={{ marginTop: 10 }}>
-              <BarList items={topTags} emptyLabel="Aucun tag utilisé pour l'instant." />
-            </div>
+            <span className="eyebrow">Activité par jour</span>
+            <p className="text-muted" style={{ fontSize: 12, marginTop: 4, marginBottom: 4 }}>
+              Quand tes clients t'écrivent le plus.
+            </p>
+            <Histogram items={byDay} />
           </div>
 
           <div className="card card--tight">
@@ -211,17 +174,9 @@ export default function Apercu() {
           </div>
 
           <div className="card card--tight">
-            <span className="eyebrow">Heures d'affluence</span>
-            <p className="text-muted" style={{ fontSize: 12, marginTop: 4, marginBottom: 10 }}>
-              Quand tes clients t'écrivent le plus.
-            </p>
-            <BarList items={topHours} />
-          </div>
-
-          <div className="card card--tight">
-            <span className="eyebrow">Jours d'affluence</span>
+            <span className="eyebrow">Tags les plus utilisés</span>
             <div style={{ marginTop: 10 }}>
-              <BarList items={byDay} />
+              <BarList items={topTags} emptyLabel="Aucun tag utilisé pour l'instant." />
             </div>
           </div>
         </>
