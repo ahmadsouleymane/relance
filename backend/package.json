@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node --watch src/index.js",
     "dev:memory": "node scripts/dev-memory.js",
+    "dev:memory:seeded": "node scripts/dev-memory-seeded.js",
     "start": "node src/index.js",
     "test": "node --test test/**/*.test.js"
   },
