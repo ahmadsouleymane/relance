@@ -11,6 +11,8 @@ export default function Connect() {
   const [status, setStatus] = useState(null);
   const [qr, setQr] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
+  const [historySyncStatus, setHistorySyncStatus] = useState("idle");
+  const [historySyncedCount, setHistorySyncedCount] = useState(0);
   const pollRef = useRef(null);
 
   const poll = useCallback(async () => {
@@ -18,6 +20,8 @@ export default function Connect() {
     if (!s) return;
     setStatus(s.status);
     setPhoneNumber(s.phoneNumber);
+    setHistorySyncStatus(s.historySyncStatus || "idle");
+    setHistorySyncedCount(s.historySyncedCount || 0);
     if (s.status === "connecting") {
       const q = await api.get("/whatsapp/qr").catch(() => null);
       setQr(q?.qr || null);
@@ -60,6 +64,16 @@ export default function Connect() {
           <button className="btn btn--sm btn--live" onClick={connect}>Connecter</button>
         ) : null}
       </div>
+
+      {status === "connected" && historySyncStatus === "syncing" && (
+        <div className="card" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span className="skeleton" style={{ width: 16, height: 16, borderRadius: "50%" }} />
+          <p style={{ fontSize: 13, fontWeight: 600 }}>
+            Import de l'historique en cours… ({historySyncedCount} message{historySyncedCount > 1 ? "s" : ""} importé
+            {historySyncedCount > 1 ? "s" : ""})
+          </p>
+        </div>
+      )}
 
       {status === "connecting" && (
         <div className="card" style={{ textAlign: "center" }}>
