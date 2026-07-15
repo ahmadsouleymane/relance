@@ -38,25 +38,21 @@ function previewOf(text, max = 120) {
   return clean.length > max ? `${clean.slice(0, max - 1)}…` : clean;
 }
 
-async function upsertContact({ owner, waId, direction, pushName, text, timestamp }) {
+function isTrackableChat(waId) {
+  return Boolean(waId) && !waId.endsWith("@g.us") && waId !== "status@broadcast";
+}
+
+async function ensureContact({ owner, waId, pushName }) {
   const phoneNumber = waId.split("@")[0];
 
-  const contact = await Contact.findOneAndUpdate(
+  return Contact.findOneAndUpdate(
     { owner, waId },
     {
       $setOnInsert: { owner, waId, phoneNumber, displayName: pushName || phoneNumber },
-      $set: {
-        ...(pushName ? { pushName } : {}),
-        lastMessageAt: timestamp,
-        lastMessageDirection: direction,
-        lastMessagePreview: previewOf(text),
-      },
-      $inc: { messageCount: 1 },
+      ...(pushName ? { $set: { pushName } } : {}),
     },
     { upsert: true, new: true }
   );
-
-  return contact;
 }
 
 async function storeMessage({ owner, contact, waMessage, direction, type, text, timestamp, intentSignal }) {
@@ -71,30 +67,46 @@ async function storeMessage({ owner, contact, waMessage, direction, type, text, 
       hasIntentSignal: intentSignal,
       timestamp,
     });
+    return true;
   } catch (err) {
     // duplicate waMessageId for this owner (e.g. Baileys redelivering on reconnect) — safe to ignore
     if (err.code !== 11000) throw err;
+    return false;
   }
+}
+
+// Only called after storeMessage confirms a genuinely new message, and only
+// moves lastMessageAt/lastFollowUpAt forward — never backward — because
+// history batches (Task 2) don't arrive in strict chronological order.
+async function applyContactActivity({ contact, direction, text, timestamp }) {
+  const isNewerMessage = { $or: [{ $eq: ["$lastMessageAt", null] }, { $lte: ["$lastMessageAt", timestamp] }] };
+  const isNewerFollowUp = { $or: [{ $eq: ["$lastFollowUpAt", null] }, { $lte: ["$lastFollowUpAt", timestamp] }] };
+
+  await Contact.updateOne({ _id: contact._id }, [
+    {
+      $set: {
+        lastMessageAt: { $cond: [isNewerMessage, timestamp, "$lastMessageAt"] },
+        lastMessageDirection: { $cond: [isNewerMessage, direction, "$lastMessageDirection"] },
+        lastMessagePreview: { $cond: [isNewerMessage, previewOf(text), "$lastMessagePreview"] },
+        messageCount: { $add: [{ $ifNull: ["$messageCount", 0] }, 1] },
+        ...(direction === "outbound"
+          ? { lastFollowUpAt: { $cond: [isNewerFollowUp, timestamp, "$lastFollowUpAt"] } }
+          : {}),
+      },
+    },
+  ]);
 }
 
 export async function logInboundMessage(ownerId, waMessage) {
   const waId = waMessage.key.remoteJid;
-  if (!waId || waId.endsWith("@g.us") || waId === "status@broadcast") return; // skip groups/status for MVP
+  if (!isTrackableChat(waId)) return;
 
   const { type, text } = extractContent(waMessage);
   const timestamp = new Date(Number(waMessage.messageTimestamp) * 1000);
   const pushName = waMessage.pushName;
 
-  const contact = await upsertContact({
-    owner: ownerId,
-    waId,
-    direction: "inbound",
-    pushName,
-    text,
-    timestamp,
-  });
-
-  await storeMessage({
+  const contact = await ensureContact({ owner: ownerId, waId, pushName });
+  const inserted = await storeMessage({
     owner: ownerId,
     contact,
     waMessage,
@@ -104,27 +116,25 @@ export async function logInboundMessage(ownerId, waMessage) {
     timestamp,
     intentSignal: hasIntentSignal(text),
   });
+
+  if (inserted) {
+    await applyContactActivity({ contact, direction: "inbound", text, timestamp });
+  }
 }
 
 export async function logOutboundMessage(ownerId, waMessage) {
   const waId = waMessage.key.remoteJid;
-  if (!waId || waId.endsWith("@g.us") || waId === "status@broadcast") return;
+  if (!isTrackableChat(waId)) return;
 
   const { type, text } = extractContent(waMessage);
   const timestamp = new Date(Number(waMessage.messageTimestamp) * 1000);
 
-  const contact = await upsertContact({
-    owner: ownerId,
-    waId,
-    direction: "outbound",
-    pushName: null,
-    text,
-    timestamp,
-  });
+  const contact = await ensureContact({ owner: ownerId, waId, pushName: null });
+  const inserted = await storeMessage({ owner: ownerId, contact, waMessage, direction: "outbound", type, text, timestamp });
 
-  // A manual reply resolves any pending follow-up suggestion for this contact.
-  contact.lastFollowUpAt = timestamp;
-  await contact.save();
-
-  await storeMessage({ owner: ownerId, contact, waMessage, direction: "outbound", type, text, timestamp });
+  if (inserted) {
+    await applyContactActivity({ contact, direction: "outbound", text, timestamp });
+  }
 }
+
+export { isTrackableChat };
