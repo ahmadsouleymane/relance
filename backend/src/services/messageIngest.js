@@ -79,8 +79,8 @@ async function storeMessage({ owner, contact, waMessage, direction, type, text, 
 // moves lastMessageAt/lastFollowUpAt forward — never backward — because
 // history batches (Task 2) don't arrive in strict chronological order.
 async function applyContactActivity({ contact, direction, text, timestamp }) {
-  const isNewerMessage = { $or: [{ $eq: ["$lastMessageAt", null] }, { $lte: ["$lastMessageAt", timestamp] }] };
-  const isNewerFollowUp = { $or: [{ $eq: ["$lastFollowUpAt", null] }, { $lte: ["$lastFollowUpAt", timestamp] }] };
+  const isNewerMessage = { $or: [{ $eq: ["$lastMessageAt", null] }, { $lt: ["$lastMessageAt", timestamp] }] };
+  const isNewerFollowUp = { $or: [{ $eq: ["$lastFollowUpAt", null] }, { $lt: ["$lastFollowUpAt", timestamp] }] };
 
   await Contact.updateOne({ _id: contact._id }, [
     {

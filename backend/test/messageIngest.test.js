@@ -73,8 +73,8 @@ test("redelivering the same waMessageId does not inflate messageCount", async ()
 });
 
 test("logOutboundMessage stamps lastFollowUpAt", async () => {
-  await logInboundMessage(OWNER, waMessage({ id: "IN1" }));
-  await logOutboundMessage(OWNER, waMessage({ id: "OUT1", fromMe: true, text: "Merci, disponible demain" }));
+  await logInboundMessage(OWNER, waMessage({ id: "IN1", secondsAgo: 5 }));
+  await logOutboundMessage(OWNER, waMessage({ id: "OUT1", fromMe: true, secondsAgo: 0, text: "Merci, disponible demain" }));
 
   const contact = await Contact.findOne({ owner: OWNER });
   assert.equal(contact.lastMessageDirection, "outbound");
