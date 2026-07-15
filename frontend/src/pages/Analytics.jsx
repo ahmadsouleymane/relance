@@ -96,11 +96,11 @@ export default function Analytics() {
 
       <div>
         <div className="eyebrow" style={{ marginBottom: 10 }}>Pipeline</div>
-        <div className="stat-grid">
+        <div className="stat-strip">
           {data.funnel.map((f) => (
-            <div key={f.status} className="stat">
-              <div className="stat__value">{f.count}</div>
-              <div className="stat__label">{STATUS_LABEL[f.status] || f.status}</div>
+            <div key={f.status} className="stat-strip__item">
+              <div className="stat-strip__value">{f.count}</div>
+              <div className="stat-strip__label">{STATUS_LABEL[f.status] || f.status}</div>
             </div>
           ))}
         </div>
