@@ -29,6 +29,12 @@ const userSchema = new mongoose.Schema(
       phoneNumber: { type: String },
       lastConnectedAt: { type: Date },
       lastDisconnectedAt: { type: Date },
+      historySyncStatus: {
+        type: String,
+        enum: ["idle", "syncing", "complete"],
+        default: "idle",
+      },
+      historySyncedCount: { type: Number, default: 0 },
     },
   },
   { timestamps: true }

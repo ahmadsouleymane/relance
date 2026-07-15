@@ -16,6 +16,8 @@ router.get("/status", requireAuth, async (req, res) => {
     phoneNumber: req.user.whatsapp.phoneNumber || null,
     lastConnectedAt: req.user.whatsapp.lastConnectedAt || null,
     lastDisconnectedAt: req.user.whatsapp.lastDisconnectedAt || null,
+    historySyncStatus: req.user.whatsapp.historySyncStatus || "idle",
+    historySyncedCount: req.user.whatsapp.historySyncedCount || 0,
   });
 });
 

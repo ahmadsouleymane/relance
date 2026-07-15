@@ -5,6 +5,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 
 import Contact from "../src/models/Contact.js";
 import Message from "../src/models/Message.js";
+import User from "../src/models/User.js";
 import { logInboundMessage, logOutboundMessage, isTrackableChat, logHistoryMessages } from "../src/services/messageIngest.js";
 
 let mongod;
@@ -133,4 +134,15 @@ test("logHistoryMessages skips groups and status broadcasts", async () => {
 
   assert.equal(inserted, 0);
   assert.equal(await Contact.countDocuments({ owner: OWNER }), 0);
+});
+
+test("User whatsapp history-sync fields default to idle/0", async () => {
+  const user = await User.create({
+    businessName: "Boutique Test",
+    email: `test-${Date.now()}@example.com`,
+    passwordHash: "irrelevant-for-this-test",
+  });
+
+  assert.equal(user.whatsapp.historySyncStatus, "idle");
+  assert.equal(user.whatsapp.historySyncedCount, 0);
 });
