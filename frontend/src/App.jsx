@@ -15,6 +15,7 @@ import Catalog from "./pages/Catalog.jsx";
 import Storefront from "./pages/Storefront.jsx";
 import Invoices from "./pages/Invoices.jsx";
 import InvoicePublic from "./pages/InvoicePublic.jsx";
+import Landing from "./pages/Landing.jsx";
 
 function PrivateArea() {
   const { user, loading } = useAuth();
@@ -26,20 +27,28 @@ function PrivateArea() {
 function PublicOnly({ children }) {
   const { user, loading } = useAuth();
   if (loading) return null;
-  if (user) return <Navigate to="/" replace />;
+  if (user) return <Navigate to="/tableau-de-bord" replace />;
   return children;
+}
+
+function Home() {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (user) return <Navigate to="/tableau-de-bord" replace />;
+  return <Landing />;
 }
 
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<Home />} />
       <Route path="/connexion" element={<PublicOnly><Login /></PublicOnly>} />
       <Route path="/inscription" element={<PublicOnly><Register /></PublicOnly>} />
       <Route path="/v/:storeSlug" element={<Storefront />} />
       <Route path="/f/:publicToken" element={<InvoicePublic />} />
 
       <Route element={<PrivateArea />}>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/tableau-de-bord" element={<Dashboard />} />
         <Route path="/contacts" element={<Contacts />} />
         <Route path="/contacts/tags" element={<Tags />} />
         <Route path="/contacts/:id" element={<ContactDetail />} />

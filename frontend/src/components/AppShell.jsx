@@ -4,7 +4,7 @@ import { IconHome, IconContacts, IconBell, IconLink, IconCard, IconLogout, IconC
 import Logomark from "./Logomark.jsx";
 
 const NAV_ITEMS = [
-  { to: "/", label: "Accueil", icon: IconHome, end: true },
+  { to: "/tableau-de-bord", label: "Accueil", icon: IconHome, end: true },
   { to: "/contacts", label: "Contacts", icon: IconContacts },
   { to: "/relances", label: "Relances", icon: IconBell },
   { to: "/catalogue", label: "Catalogue", icon: IconBox },
