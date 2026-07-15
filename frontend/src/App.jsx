@@ -3,13 +3,12 @@ import { useAuth } from "./context/AuthContext.jsx";
 import AppShell from "./components/AppShell.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
+import Apercu from "./pages/Apercu.jsx";
 import Contacts from "./pages/Contacts.jsx";
 import ContactDetail from "./pages/ContactDetail.jsx";
 import Tags from "./pages/Tags.jsx";
 import Connect from "./pages/Connect.jsx";
 import Relances from "./pages/Relances.jsx";
-import Analytics from "./pages/Analytics.jsx";
 import Billing from "./pages/Billing.jsx";
 import Catalog from "./pages/Catalog.jsx";
 import Storefront from "./pages/Storefront.jsx";
@@ -50,9 +49,8 @@ export default function App() {
       <Route path="/f/:publicToken" element={<InvoicePublic />} />
 
       <Route element={<PrivateArea />}>
-        <Route path="/apercu" element={<Dashboard />} />
+        <Route path="/apercu" element={<Apercu />} />
         <Route path="/relances" element={<Relances />} />
-        <Route path="/analytiques" element={<Analytics />} />
 
         <Route path="/conversations" element={<Contacts />} />
         <Route path="/conversations/tags" element={<Tags />} />
