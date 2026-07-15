@@ -10,7 +10,7 @@ import {
 } from "@whiskeysockets/baileys";
 
 import User from "../models/User.js";
-import { logInboundMessage, logOutboundMessage } from "../services/messageIngest.js";
+import { logInboundMessage, logOutboundMessage, logHistoryMessages } from "../services/messageIngest.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const AUTH_ROOT = path.join(__dirname, "..", "..", "data", "wa-sessions");
@@ -57,12 +57,16 @@ class WhatsAppManager {
       auth: state,
       logger,
       printQRInTerminal: false,
-      syncFullHistory: false,
+      syncFullHistory: true,
       markOnlineOnConnect: false,
     });
 
-    this.sessions.set(key, { sock, qr: null, status: "connecting" });
-    await User.findByIdAndUpdate(key, { "whatsapp.status": "connecting" });
+    this.sessions.set(key, { sock, qr: null, status: "connecting", historySync: { status: "idle", count: 0 } });
+    await User.findByIdAndUpdate(key, {
+      "whatsapp.status": "connecting",
+      "whatsapp.historySyncStatus": "idle",
+      "whatsapp.historySyncedCount": 0,
+    });
 
     sock.ev.on("creds.update", saveCreds);
 
@@ -80,13 +84,27 @@ class WhatsAppManager {
         if (session) {
           session.status = "connected";
           session.qr = null;
+          session.historySync = { status: "syncing", count: 0 };
         }
         await User.findByIdAndUpdate(key, {
           "whatsapp.status": "connected",
           "whatsapp.phoneNumber": phoneNumber,
           "whatsapp.lastConnectedAt": new Date(),
+          "whatsapp.historySyncStatus": "syncing",
+          "whatsapp.historySyncedCount": 0,
         });
         console.log(`[wa:${key}] connected as ${phoneNumber}`);
+
+        // Safety net: a brand-new number (or a flaky sync) may never send a
+        // final history chunk — don't leave the UI stuck on "importing"
+        // forever if that happens.
+        setTimeout(async () => {
+          const current = this.sessions.get(key);
+          if (current?.historySync?.status === "syncing") {
+            current.historySync.status = "complete";
+            await User.findByIdAndUpdate(key, { "whatsapp.historySyncStatus": "complete" }).catch(() => {});
+          }
+        }, 2 * 60 * 1000);
       }
 
       if (connection === "close") {
@@ -126,6 +144,24 @@ class WhatsAppManager {
       }
     });
 
+    sock.ev.on("messaging-history.set", async ({ messages, isLatest }) => {
+      const session = this.sessions.get(key);
+      try {
+        const inserted = await logHistoryMessages(key, messages);
+        if (session) {
+          session.historySync = session.historySync || { status: "syncing", count: 0 };
+          session.historySync.count += inserted;
+          if (isLatest) session.historySync.status = "complete";
+        }
+        await User.findByIdAndUpdate(key, {
+          "whatsapp.historySyncedCount": session?.historySync.count ?? inserted,
+          ...(isLatest ? { "whatsapp.historySyncStatus": "complete" } : {}),
+        });
+      } catch (err) {
+        console.error(`[wa:${key}] failed to log history batch`, err);
+      }
+    });
+
     return sock;
   }
 
@@ -137,7 +173,11 @@ class WhatsAppManager {
     }
     this.sessions.delete(key);
     fs.rmSync(this.sessionDir(key), { recursive: true, force: true });
-    await User.findByIdAndUpdate(key, { "whatsapp.status": "disconnected" });
+    await User.findByIdAndUpdate(key, {
+      "whatsapp.status": "disconnected",
+      "whatsapp.historySyncStatus": "idle",
+      "whatsapp.historySyncedCount": 0,
+    });
   }
 }
 
