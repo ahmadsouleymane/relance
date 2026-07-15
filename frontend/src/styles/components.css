@@ -188,7 +188,7 @@ img { max-width: 100%; display: block; }
 .segmented > * {
   border: none; background: none; padding: 8px 16px; border-radius: var(--radius-pill);
   font-weight: 700; font-size: 12.5px; cursor: pointer; color: var(--ink-soft);
-  text-decoration: none; display: inline-flex; align-items: center; white-space: nowrap;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
 }
 .segmented > .is-active { background: var(--ink); color: var(--paper); }
 
@@ -460,6 +460,47 @@ img { max-width: 100%; display: block; }
 }
 .tag-chip button { border: none; background: none; cursor: pointer; display: flex; color: inherit; opacity: 0.6; }
 .tag-swatch { width: 10px; height: 10px; border-radius: 999px; }
+
+/* ============ vertical histogram (Aperçu) ============ */
+.histogram {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  height: 120px;
+  padding-top: var(--sp-4);
+}
+.histogram__col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  justify-content: flex-end;
+}
+.histogram__bar {
+  width: 100%;
+  max-width: 28px;
+  border-radius: 6px 6px 2px 2px;
+  background: var(--accent);
+  min-height: 3px;
+}
+.histogram__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* ============ no-photo placeholder (Vendre, Vitrine) ============ */
+.photo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper-sunken);
+  border: var(--border-w) dashed var(--line);
+  color: var(--ink-soft);
+}
 
 /* ============ bar-lists (Aperçu) ============ */
 .bar-row {

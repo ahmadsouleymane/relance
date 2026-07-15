@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../api/client.js";
-import { IconSearch, IconCheck, IconAlert, IconClock } from "../components/icons.jsx";
+import { IconSearch, IconCheck, IconAlert, IconClock, IconWhatsapp } from "../components/icons.jsx";
 
 function initialsOf(name = "") {
   return name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase()).join("") || "?";
@@ -34,6 +34,22 @@ const LEAD_SCORE_LABEL = { chaud: "Chaud", tiede: "Tiède" };
 const URGENCY_ICON = { critique: IconAlert, attention: IconClock, info: IconClock };
 const URGENCY_TEXT = { critique: "Risque de perte", attention: "À relancer", info: "À relancer bientôt" };
 
+// Adapts to the conversation (references the client's own last message when
+// available) and to how urgent the silence is — the vendor can still edit
+// every word before it ever reaches WhatsApp, nothing is sent on their behalf.
+function buildRelanceMessage(contact, preview, urgency) {
+  const name = contact.pushName || contact.displayName?.split(" ")[0] || "";
+  const greeting = name ? `Bonjour ${name}` : "Bonjour";
+  if (urgency === "critique") {
+    return preview
+      ? `${greeting}, je reviens vers vous — vous m'aviez écrit il y a quelques jours : « ${preview} ». Est-ce toujours d'actualité ? Je reste disponible.`
+      : `${greeting}, je reviens vers vous car nous n'avons pas eu l'occasion de finaliser notre échange. Toujours partant(e) ?`;
+  }
+  return preview
+    ? `${greeting}, pour faire suite à votre message « ${preview} » — je reviens vers vous, n'hésitez pas si vous avez besoin de quoi que ce soit.`
+    : `${greeting}, je reviens vers vous suite à notre dernier échange — n'hésitez pas si vous avez besoin de quoi que ce soit.`;
+}
+
 const TABS = [
   { key: "tous", label: "Tous" },
   { key: "a-relancer", label: "À relancer" },
@@ -49,6 +65,8 @@ export default function Conversations() {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState(null);
   const [suggestionsLocked, setSuggestionsLocked] = useState(false);
+  const [relanceOpenId, setRelanceOpenId] = useState(null);
+  const [relanceText, setRelanceText] = useState("");
 
   const setFiltre = (key) => setSearchParams(key === "tous" ? {} : { filtre: key });
 
@@ -81,6 +99,15 @@ export default function Conversations() {
   const dismiss = async (contactId) => {
     await api.post(`/contacts/${contactId}/follow-up/dismiss`, {});
     loadSuggestions();
+  };
+
+  const openRelance = (contact, preview, urgency) => {
+    setRelanceOpenId(contact._id);
+    setRelanceText(buildRelanceMessage(contact, preview, urgency));
+  };
+
+  const sendRelance = (phoneNumber) => {
+    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(relanceText)}`, "_blank");
   };
 
   const isEmpty = contacts && contacts.length === 0 && !query && filtre === "tous";
@@ -208,23 +235,51 @@ export default function Conversations() {
                       « {preview} »
                     </p>
                   )}
-                  <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
-                    <Link to={`/conversations/${contact._id}`} className="btn btn--sm btn--ghost" style={{ flex: 1 }}>
-                      Voir la conversation
-                    </Link>
-                    <button
-                      className="btn btn--sm btn--primary"
-                      type="button"
-                      disabled
-                      title="Message de relance pré-rempli — bientôt disponible"
-                      style={{ opacity: 0.5, cursor: "not-allowed" }}
-                    >
-                      Relancer
-                    </button>
-                    <button className="btn btn--sm" onClick={() => dismiss(contact._id)}>
-                      <IconCheck width={14} height={14} /> Relancé
-                    </button>
-                  </div>
+
+                  {relanceOpenId === contact._id ? (
+                    <div className="stack--sm">
+                      <textarea
+                        value={relanceText}
+                        onChange={(e) => setRelanceText(e.target.value)}
+                        rows={4}
+                        style={{
+                          width: "100%", padding: 10, borderRadius: 10,
+                          border: "1.5px solid var(--line)", background: "var(--paper-raised)",
+                          fontFamily: "inherit", fontSize: 13, resize: "vertical",
+                        }}
+                      />
+                      <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+                        <button
+                          className="btn btn--sm btn--primary"
+                          type="button"
+                          onClick={() => sendRelance(contact.phoneNumber)}
+                          style={{ flex: 1 }}
+                          disabled={!relanceText.trim()}
+                        >
+                          <IconWhatsapp width={14} height={14} /> Envoyer sur WhatsApp
+                        </button>
+                        <button className="btn btn--sm btn--ghost" type="button" onClick={() => setRelanceOpenId(null)}>
+                          Annuler
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+                      <Link to={`/conversations/${contact._id}`} className="btn btn--sm btn--ghost" style={{ flex: 1 }}>
+                        Voir la conversation
+                      </Link>
+                      <button
+                        className="btn btn--sm btn--primary"
+                        type="button"
+                        onClick={() => openRelance(contact, preview, urgency)}
+                      >
+                        <IconWhatsapp width={14} height={14} /> Relancer
+                      </button>
+                      <button className="btn btn--sm" onClick={() => dismiss(contact._id)}>
+                        <IconCheck width={14} height={14} /> Relancé
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}

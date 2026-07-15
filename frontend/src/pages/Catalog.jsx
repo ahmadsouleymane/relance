@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/client.js";
-import { IconPlus, IconX } from "../components/icons.jsx";
+import { IconPlus, IconX, IconBox } from "../components/icons.jsx";
 
 const STATUS_LABEL = { disponible: "Disponible", rupture: "Rupture", archive: "Archivé" };
 
@@ -179,7 +179,9 @@ export default function Catalog() {
               {p.photos?.[0] ? (
                 <img src={p.photos[0]} alt="" style={{ width: "100%", height: 130, objectFit: "cover", borderRadius: 10, marginBottom: 8 }} />
               ) : (
-                <div className="skeleton" style={{ width: "100%", height: 130, borderRadius: 10, marginBottom: 8 }} />
+                <div className="photo-placeholder" style={{ width: "100%", height: 130, borderRadius: 10, marginBottom: 8 }}>
+                  <IconBox width={26} height={26} />
+                </div>
               )}
               <div className="row row--between">
                 <strong style={{ fontSize: 14 }}>{p.name}</strong>
