@@ -93,7 +93,7 @@ export default function ContactDetail() {
   return (
     <div className="stack">
       <Link to="/conversations" className="text-muted" style={{ fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
-        ← Contacts
+        ← Conversations
       </Link>
 
       <div className="row" style={{ gap: 14 }}>

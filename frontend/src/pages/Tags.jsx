@@ -38,7 +38,7 @@ export default function Tags() {
   return (
     <div className="stack">
       <Link to="/conversations" className="text-muted" style={{ fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
-        ← Contacts
+        ← Conversations
       </Link>
       <h1 className="display-2">Tags</h1>
       <p className="text-muted" style={{ fontSize: 13.5 }}>
