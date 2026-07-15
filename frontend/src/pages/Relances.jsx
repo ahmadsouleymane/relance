@@ -58,7 +58,7 @@ export default function Relances() {
 
       {suggestions?.length === 0 && (
         <div className="empty">
-          <div className="h2">Tout est à jour 🎉</div>
+          <div className="h2">Tout est à jour</div>
           <p>Aucun client en attente de réponse pour l'instant.</p>
         </div>
       )}
