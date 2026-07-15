@@ -1,29 +1,24 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api/client.js";
-import { IconContacts, IconBell, IconBox, IconChart, IconCheck } from "../components/icons.jsx";
+import { IconContacts, IconBell, IconBox, IconCheck } from "../components/icons.jsx";
 import Logomark from "../components/Logomark.jsx";
 
-const FEATURES = [
+const PILLARS = [
   {
     icon: IconContacts,
-    title: "Historique client automatique",
-    body: "Chaque conversation WhatsApp devient une fiche contact, sans rien remplir toi-même.",
+    title: "Zéro effort",
+    body: "Chaque conversation WhatsApp devient une fiche contact toute seule, sans rien remplir. Ton historique client existe déjà — Relance le récupère à la connexion.",
   },
   {
     icon: IconBell,
-    title: "Sais qui relancer",
-    body: "Relance repère les clients qui attendent une réponse et les classe par urgence.",
+    title: "Relance intelligente",
+    body: "Relance repère les clients qui attendent une réponse, les classe par urgence, et te dit qui recontacter en premier.",
   },
   {
     icon: IconBox,
-    title: "Vitrine et factures",
-    body: "Partage ton catalogue et encaisse tes ventes avec un simple lien à coller dans la conversation.",
-  },
-  {
-    icon: IconChart,
-    title: "Statistiques claires",
-    body: "Vois d'où viennent tes ventes, qui sont tes meilleurs clients, et quand ils t'écrivent.",
+    title: "Vitrine et ventes",
+    body: "Partage ton catalogue en ligne et encaisse tes ventes avec un simple lien à coller dans la conversation — inclus dans ton abonnement.",
   },
 ];
 
@@ -65,17 +60,38 @@ export default function Landing() {
         <span className="eyebrow">CRM WhatsApp pour commerçants</span>
         <h1 className="display-1">Ne perds plus un client dans tes conversations WhatsApp.</h1>
         <p className="text-muted" style={{ fontSize: 16, maxWidth: 560, margin: "0 auto" }}>
-          Relance historise tes échanges, te dit qui relancer, et te donne une vitrine pour vendre —
+          Ton historique se construit tout seul, Relance te dit qui recontacter, et ta vitrine vend pour toi —
           sans jamais envoyer un message à ta place.
         </p>
         <div className="row" style={{ gap: 10, justifyContent: "center", marginTop: 8 }}>
           <Link to="/inscription" className="btn btn--primary">7 jours d'essai gratuit</Link>
           <Link to="/connexion" className="btn btn--ghost">Se connecter</Link>
         </div>
+
+        <div className="landing-hero-mockup">
+          <div style={{ background: "var(--ink)", color: "var(--paper)", padding: "10px 14px", fontWeight: 700, fontSize: 13 }}>
+            Aujourd'hui
+          </div>
+          <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ background: "var(--accent-tint)", borderRadius: 10, padding: "8px 12px", fontSize: 12, fontWeight: 700, color: "var(--accent-ink)" }}>
+              7 clients attendent une réponse →
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <div style={{ flex: 1, background: "var(--paper-sunken)", borderRadius: 10, padding: 10 }}>
+                <div style={{ fontSize: 18, fontWeight: 800 }}>128 400 F</div>
+                <div style={{ fontSize: 10, color: "var(--ink-soft)" }}>Ventes ce mois</div>
+              </div>
+              <div style={{ flex: 1, background: "var(--paper-sunken)", borderRadius: 10, padding: 10 }}>
+                <div style={{ fontSize: 18, fontWeight: 800 }}>15</div>
+                <div style={{ fontSize: 10, color: "var(--ink-soft)" }}>Contacts actifs</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="landing-features">
-        {FEATURES.map(({ icon: Icon, title, body }) => (
+        {PILLARS.map(({ icon: Icon, title, body }) => (
           <div key={title} className="card card--tight landing-feature">
             <Icon width={22} height={22} />
             <div className="h2" style={{ marginTop: 10 }}>{title}</div>

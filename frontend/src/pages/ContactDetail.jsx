@@ -92,8 +92,8 @@ export default function ContactDetail() {
 
   return (
     <div className="stack">
-      <Link to="/contacts" className="text-muted" style={{ fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
-        ← Contacts
+      <Link to="/conversations" className="text-muted" style={{ fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
+        ← Conversations
       </Link>
 
       <div className="row" style={{ gap: 14 }}>
@@ -172,7 +172,7 @@ export default function ContactDetail() {
               );
             })}
             {allTags.length === 0 && (
-              <Link to="/contacts/tags" className="text-muted" style={{ fontSize: 12.5 }}>Créer un tag →</Link>
+              <Link to="/conversations/tags" className="text-muted" style={{ fontSize: 12.5 }}>Créer un tag →</Link>
             )}
           </div>
         )}
