@@ -21,6 +21,41 @@ router.get("/invoice/:publicToken", async (req, res) => {
   });
 });
 
+// Cross-vendor discovery feed for the marketplace home page — only products
+// from identity-verified vendors are surfaced here (see User.isVerifiedSeller),
+// even though a pending vendor can still manage their own catalog privately.
+router.get("/marketplace/products", async (req, res) => {
+  const { q } = req.query;
+  const verifiedVendors = await User.find({
+    accountType: "vendeur",
+    "sellerVerification.status": "approuvee",
+  }).select("_id businessName storeSlug");
+  const vendorIds = verifiedVendors.map((v) => v._id);
+  const vendorsById = new Map(verifiedVendors.map((v) => [v._id.toString(), v]));
+
+  const filter = { owner: { $in: vendorIds }, status: "disponible" };
+  if (q?.trim()) filter.name = { $regex: q.trim(), $options: "i" };
+
+  const products = await Product.find(filter)
+    .sort({ createdAt: -1 })
+    .select("owner name description price photos slug");
+
+  res.json({
+    products: products.map((p) => ({
+      _id: p._id,
+      name: p.name,
+      description: p.description,
+      price: p.price,
+      photos: p.photos,
+      slug: p.slug,
+      vendor: {
+        businessName: vendorsById.get(p.owner.toString())?.businessName,
+        storeSlug: vendorsById.get(p.owner.toString())?.storeSlug,
+      },
+    })),
+  });
+});
+
 router.get("/:storeSlug", async (req, res) => {
   const user = await User.findOne({ storeSlug: req.params.storeSlug.toLowerCase() });
   if (!user) return res.status(404).json({ error: "Boutique introuvable" });

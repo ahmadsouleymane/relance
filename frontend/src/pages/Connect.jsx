@@ -99,7 +99,7 @@ export default function Connect() {
 
       <div className="card" style={{ background: "var(--live-tint)", borderColor: "var(--live-ink)" }}>
         <p style={{ fontSize: 13, fontWeight: 600, color: "var(--live-ink)" }}>
-          Relance ne fait jamais d'envoi automatique. On lit tes conversations pour construire ton historique et te
+          DJASSA ne fait jamais d'envoi automatique. On lit tes conversations pour construire ton historique et te
           suggérer qui relancer — c'est toujours toi qui écris et qui envoies, depuis ton téléphone.
         </p>
       </div>

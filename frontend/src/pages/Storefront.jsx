@@ -92,7 +92,7 @@ export default function Storefront() {
             <IconWhatsapp width={14} height={14} />
             <span>Pour commander, contacte {store.businessName} directement sur WhatsApp.</span>
           </div>
-          <span className="text-muted" style={{ fontSize: 11 }}>Propulsé par Relance</span>
+          <span className="text-muted" style={{ fontSize: 11 }}>Propulsé par DJASSA</span>
         </footer>
       </div>
     </div>

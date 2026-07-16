@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DJASSA — pistes de logo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Work+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1c1509; --paper: #eee7d6; --paper-raised: #fffcf5;
+    --brand: #232f56; --accent: #e0991e; --live: #1b7a52; --line: rgba(28,21,9,.18);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Work Sans", sans-serif; }
+  header { padding: 56px 24px 24px; text-align: center; }
+  h1 { font-family: "Bungee", sans-serif; font-weight: 400; font-size: 34px; margin: 0 0 8px; }
+  header p { max-width: 560px; margin: 0 auto; color: #6b5f4c; font-size: 15px; }
+  section { max-width: 1080px; margin: 0 auto; padding: 32px 24px; }
+  h2 { font-family: "Bungee", sans-serif; font-weight: 400; font-size: 20px; margin: 0 0 18px; }
+  .eyebrow { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--brand); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+  .card { background: var(--paper-raised); border: 1.5px solid var(--line); border-radius: 12px; padding: 20px; }
+  .card svg { width: 100%; height: 140px; display: block; margin-bottom: 12px; }
+  .card strong { display: block; font-size: 14.5px; margin-bottom: 6px; }
+  .card p { font-size: 12.5px; color: #6b5f4c; line-height: 1.45; margin: 0; }
+  .card--picked { border: 2px solid var(--brand); position: relative; }
+  .badge { position: absolute; top: -11px; right: 16px; background: var(--accent); color: #7a4a0a; font-size: 10.5px; font-weight: 800; padding: 3px 10px; border-radius: 999px; border: 1.5px solid #7a4a0a; }
+  .lockups { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .lockup { border-radius: 12px; padding: 32px; display: flex; align-items: center; justify-content: center; }
+  .lockup img { max-width: 100%; height: auto; }
+  .lockup--paper { background: var(--paper-raised); border: 1.5px solid var(--line); }
+  .lockup--brand { background: var(--brand); }
+  .lockup--gold { background: var(--accent); }
+  .icons { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
+  .icons img { border-radius: 22%; box-shadow: 0 6px 16px -6px rgba(28,21,9,.35); }
+  footer { text-align: center; padding: 40px 24px 60px; color: #6b5f4c; font-size: 12px; }
+</style>
+</head>
+<body>
+  <header>
+    <span class="eyebrow">DJASSA — exploration de marque</span>
+    <h1>Le panier, scellé.</h1>
+    <p>Six pistes explorent la même idée : les biens du marché et leur protection dans une seule forme.
+       La variante 1 est retenue parce qu'elle prolonge le mark déjà en place dans l'app — pas de rupture de marque.</p>
+  </header>
+
+  <section>
+    <h2>Six pistes</h2>
+    <div class="grid">
+      <div class="card card--picked">
+        <span class="badge">Retenue</span>
+        <svg viewBox="0 0 100 100" fill="none" stroke="#232F56">
+          <circle cx="50" cy="50" r="45" stroke-width="4"/>
+          <path d="M29 62 C29 40 37 30 50 30 C63 30 71 40 71 62 Z" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M36 53c9 2.5 18.5 2.5 28 0" stroke="#E0991E" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+          <rect x="21" y="45" width="58" height="11" rx="3" transform="rotate(-28 50 50)" stroke="#E0991E" stroke-width="4"/>
+          <circle cx="50" cy="50" r="9" stroke="#E0991E" stroke-width="4"/>
+          <circle cx="50" cy="50" r="2.6" fill="#232F56" stroke="none"/>
+        </svg>
+        <strong>1 — Panier scellé</strong>
+        <p>Le panier de marché noué par un ruban de cire. Littéral, mémorable, lisible même petit — et déjà la base du mark utilisé dans l'app.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#232F56">
+          <circle cx="50" cy="50" r="45" stroke-width="4"/>
+          <rect x="15" y="44.5" width="70" height="11" rx="3" transform="rotate(-28 50 50)" stroke="#E0991E" stroke-width="4"/>
+          <circle cx="50" cy="50" r="11" stroke="#E0991E" stroke-width="4"/>
+          <circle cx="50" cy="50" r="3" fill="#232F56" stroke="none"/>
+        </svg>
+        <strong>2 — Sceau seul</strong>
+        <p>Juste le ruban et le cachet, sans panier. Le plus robuste en très petite taille (favicon, app switcher).</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#232F56">
+          <path d="M30 20 L30 80 M30 20 C56 20 71 33 71 50 C71 67 56 80 30 80" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="30" y="45" width="26" height="7" rx="2" transform="rotate(-24 47 50)" stroke="#E0991E" stroke-width="3"/>
+          <circle cx="47" cy="50" r="6.5" stroke="#E0991E" stroke-width="3"/>
+          <circle cx="47" cy="50" r="1.8" fill="#232F56" stroke="none"/>
+        </svg>
+        <strong>3 — D-sceau</strong>
+        <p>Un "D" au monotrait épais, façon enseigne peinte à la main, avec le sceau logé dans son contrepoinçon.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#232F56">
+          <path d="M18 24 L82 24 L82 32 L71 44 L60 32 L50 44 L40 32 L29 44 L18 32 Z" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M32 46 L32 78 M68 46 L68 78" stroke-width="4" stroke-linecap="round"/>
+          <path d="M24 78 L76 78" stroke-width="4" stroke-linecap="round"/>
+          <rect x="36" y="20.5" width="28" height="7" rx="2" transform="rotate(-20 50 24)" stroke="#E0991E" stroke-width="3"/>
+          <circle cx="50" cy="24" r="5" stroke="#E0991E" stroke-width="3"/>
+        </svg>
+        <strong>4 — Étal</strong>
+        <p>L'auvent à dents d'un kiosque de marché, scellé par le même ruban. Penche vers "marché" plus que "protection".</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#232F56">
+          <path d="M50 50 L17 27 L26 50 L17 73 Z" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M50 50 L83 27 L74 50 L83 73 Z" stroke-width="4" stroke-linejoin="round"/>
+          <rect x="42" y="41" width="16" height="18" rx="4" stroke="#E0991E" stroke-width="4"/>
+          <circle cx="50" cy="50" r="2.6" fill="#232F56" stroke="none"/>
+        </svg>
+        <strong>5 — Nœud</strong>
+        <p>Deux pans de ruban noués, sans cercle ni panier. La lecture la plus abstraite : "une affaire scellée".</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#232F56">
+          <rect x="6" y="6" width="88" height="88" rx="22" stroke-width="4"/>
+          <path d="M31 63 C31 42 38 32 50 32 C62 32 69 42 69 63 Z" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M37 55c8.5 2.2 17.5 2.2 26 0" stroke="#E0991E" stroke-width="2.4" stroke-linecap="round" opacity="0.8"/>
+          <rect x="23" y="45.5" width="54" height="10" rx="3" transform="rotate(-28 50 50)" stroke="#E0991E" stroke-width="4"/>
+          <circle cx="50" cy="50" r="8" stroke="#E0991E" stroke-width="4"/>
+          <circle cx="50" cy="50" r="2.4" fill="#232F56" stroke="none"/>
+        </svg>
+        <strong>6 — Tampon carré</strong>
+        <p>Le même panier scellé, dans un cadre carré à coins arrondis — prêt pour une icône d'app iOS/Android.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Lockup final</h2>
+    <div class="lockups">
+      <div class="lockup lockup--paper"><img src="djassa-logo-lockup.svg" alt="DJASSA sur fond clair" /></div>
+      <div class="lockup lockup--brand"><img src="djassa-logo-lockup-dark.svg" alt="DJASSA sur fond indigo" /></div>
+      <div class="lockup lockup--gold"><img src="djassa-logo-lockup.svg" alt="DJASSA sur fond or" /></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Icône d'app</h2>
+    <div class="icons">
+      <img src="djassa-appicon-square.svg" width="112" height="112" alt="Icône 112px" />
+      <img src="djassa-appicon-square.svg" width="72" height="72" alt="Icône 72px" />
+      <img src="djassa-appicon-square.svg" width="44" height="44" alt="Icône 44px" />
+      <img src="djassa-appicon-square.svg" width="24" height="24" alt="Icône 24px" />
+    </div>
+  </section>
+
+  <footer>Fichiers sources : variant-1…6 (monochrome, currentColor), djassa-logo-lockup(-dark).svg, djassa-symbol-color.svg, djassa-appicon-square.svg.</footer>
+</body>
+</html>

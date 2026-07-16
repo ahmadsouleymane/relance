@@ -1,4 +1,6 @@
 // One-off setup script: registers this API's webhook endpoint with GeniusPay.
+// This single endpoint handles both subscription payments and marketplace
+// order payments (see routes/billing.js's webhook handler).
 // Run once per environment (sandbox and live use different API keys/URLs):
 //   node scripts/registerWebhook.js
 import "dotenv/config";

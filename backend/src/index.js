@@ -1,4 +1,5 @@
 import "dotenv/config";
+import http from "node:http";
 import express from "express";
 import cors from "cors";
 
@@ -16,7 +17,13 @@ import productsRoutes from "./routes/products.js";
 import publicRoutes from "./routes/public.js";
 import invoicesRoutes from "./routes/invoices.js";
 import digestRoutes from "./routes/digest.js";
+import ordersRoutes from "./routes/orders.js";
+import conversationsRoutes from "./routes/conversations.js";
+import verificationRoutes from "./routes/verification.js";
+import adminRoutes from "./routes/admin.js";
 import { scheduleWeeklyDigestJob } from "./jobs/weeklyDigestJob.js";
+import { scheduleOrderTimeoutJob } from "./jobs/orderTimeoutJob.js";
+import { initRealtime } from "./services/realtime.js";
 import Contact from "./models/Contact.js";
 
 const app = express();
@@ -25,6 +32,7 @@ app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
 
 // Mounted first, and only here, so this path gets the RAW body (needed for
 // GeniusPay's HMAC signature check) instead of the parsed JSON body below.
+// Handles both subscription and order payments — see routes/billing.js.
 app.use("/api/billing/webhook", webhookRouter);
 
 app.use(express.json());
@@ -44,6 +52,10 @@ app.use("/api/products", productsRoutes);
 app.use("/api/public", publicRoutes);
 app.use("/api/invoices", invoicesRoutes);
 app.use("/api/digest", digestRoutes);
+app.use("/api/orders", ordersRoutes);
+app.use("/api/conversations", conversationsRoutes);
+app.use("/api/verification", verificationRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
@@ -51,6 +63,8 @@ app.use((err, _req, res, _next) => {
 });
 
 const port = process.env.PORT || 4000;
+const server = http.createServer(app);
+initRealtime(server);
 
 connectDB()
   .then(async () => {
@@ -59,7 +73,8 @@ connectDB()
     // the analytics funnel would bucket old contacts under null instead of "nouveau".
     await Contact.updateMany({ status: { $exists: false } }, { $set: { status: "nouveau" } });
     scheduleWeeklyDigestJob();
-    app.listen(port, () => console.log(`[api] listening on :${port}`));
+    scheduleOrderTimeoutJob();
+    server.listen(port, () => console.log(`[api] listening on :${port}`));
   })
   .catch((err) => {
     console.error("[api] failed to start", err);

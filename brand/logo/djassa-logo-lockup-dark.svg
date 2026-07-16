@@ -1,0 +1,14 @@
+<svg viewBox="0 0 460 120" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Variante pour fonds sombres : encre remplacée par crème sur le
+       symbole, wordmark en crème. -->
+  <g transform="translate(10,10)">
+    <circle cx="50" cy="50" r="47" fill="#4A5A94" stroke="#F5F0E1" stroke-width="4"/>
+    <path d="M28 64 C28 39 37 28 50 28 C63 28 72 39 72 64 Z" fill="#171E38" stroke="#F5F0E1" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M35.5 54.5c9.5 2.6 19.5 2.6 29 0" stroke="#F5F0E1" stroke-width="2.5" stroke-linecap="round" opacity="0.35"/>
+    <rect x="18" y="44.5" width="64" height="12" rx="3" transform="rotate(-28 50 50)" fill="#E0991E" stroke="#F5F0E1" stroke-width="4"/>
+    <circle cx="50" cy="50" r="9.5" fill="#E0991E" stroke="#F5F0E1" stroke-width="4"/>
+    <circle cx="50" cy="50" r="2.8" fill="#171E38"/>
+  </g>
+  <text x="140" y="66" font-family="Bungee, 'Arial Black', sans-serif" font-size="46" fill="#F5F0E1">DJASSA</text>
+  <text x="141" y="90" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="13" letter-spacing="2" fill="#E0991E">LE MARCHÉ WHATSAPP PROTÉGÉ</text>
+</svg>

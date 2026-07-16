@@ -1,0 +1,9 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Variant 3 — D-sceau : un "D" tracé au monotrait épais, façon enseigne
+       peinte à la main, avec le sceau logé dans le contrepoinçon de la lettre. -->
+  <path d="M30 20 L30 80 M30 20 C56 20 71 33 71 50 C71 67 56 80 30 80"
+        stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="30" y="45" width="26" height="7" rx="2" transform="rotate(-24 47 50)" stroke="currentColor" stroke-width="3"/>
+  <circle cx="47" cy="50" r="6.5" stroke="currentColor" stroke-width="3"/>
+  <circle cx="47" cy="50" r="1.8" fill="currentColor"/>
+</svg>

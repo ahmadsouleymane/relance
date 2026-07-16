@@ -24,6 +24,24 @@ export async function requireAuth(req, res, next) {
   }
 }
 
+// V1 dispute mediation is manual and low-volume (see DJASSA plan) — a static
+// allowlist of admin emails is enough, no need for a full roles system yet.
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
+  .split(",")
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
+
+export function isAdminEmail(email) {
+  return ADMIN_EMAILS.includes((email || "").toLowerCase());
+}
+
+export function requireAdmin(req, res, next) {
+  if (!isAdminEmail(req.user.email)) {
+    return res.status(403).json({ error: "Réservé aux administrateurs" });
+  }
+  next();
+}
+
 export function requireFeature(feature) {
   return (req, res, next) => {
     const planId = req.user.plan.id;

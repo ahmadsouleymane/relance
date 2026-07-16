@@ -1,11 +1,13 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { api, getToken, setToken } from "../api/client.js";
+import { disconnectSocket } from "../api/socket.js";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [hasActiveAccess, setHasActiveAccess] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
@@ -18,6 +20,7 @@ export function AuthProvider({ children }) {
       const data = await api.get("/auth/me");
       setUser(data.user);
       setHasActiveAccess(data.hasActiveAccess);
+      setIsAdmin(data.isAdmin);
     } catch {
       setToken(null);
       setUser(null);
@@ -45,12 +48,13 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    disconnectSocket();
     setToken(null);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, hasActiveAccess, loading, login, register, logout, refresh, setUser }}>
+    <AuthContext.Provider value={{ user, hasActiveAccess, isAdmin, loading, login, register, logout, refresh, setUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,24 +1,29 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api/client.js";
-import { IconContacts, IconBell, IconBox, IconCheck } from "../components/icons.jsx";
+import { IconContacts, IconBell, IconBox, IconCheck, IconShield } from "../components/icons.jsx";
 import Logomark from "../components/Logomark.jsx";
 
 const PILLARS = [
   {
+    icon: IconShield,
+    title: "Argent protégé",
+    body: "Un acheteur du marché paie, mais son argent reste bloqué en séquestre jusqu'à ce qu'il confirme avoir reçu le produit. Toi tu es sûr d'être payé, lui est sûr de ne pas se faire avoir.",
+  },
+  {
     icon: IconContacts,
     title: "Zéro effort",
-    body: "Chaque conversation WhatsApp devient une fiche contact toute seule, sans rien remplir. Ton historique client existe déjà — Relance le récupère à la connexion.",
+    body: "Chaque conversation WhatsApp devient une fiche contact toute seule, sans rien remplir. Ton historique client existe déjà — DJASSA le récupère à la connexion.",
   },
   {
     icon: IconBell,
     title: "Relance intelligente",
-    body: "Relance repère les clients qui attendent une réponse, les classe par urgence, et te dit qui recontacter en premier.",
+    body: "DJASSA repère les clients qui attendent une réponse, les classe par urgence, et te dit qui recontacter en premier.",
   },
   {
     icon: IconBox,
-    title: "Vitrine et ventes",
-    body: "Partage ton catalogue en ligne et encaisse tes ventes avec un simple lien à coller dans la conversation — inclus dans ton abonnement.",
+    title: "Vitrine et factures",
+    body: "Partage ton catalogue avec un lien à coller dans la conversation, et encaisse tes ventes — inclus dans ton abonnement.",
   },
 ];
 
@@ -48,7 +53,7 @@ export default function Landing() {
       <header className="landing-nav">
         <div className="row" style={{ gap: 10 }}>
           <Logomark size={28} />
-          <span className="h1">Relance</span>
+          <span className="h1">DJASSA</span>
         </div>
         <div className="row" style={{ gap: 10 }}>
           <Link to="/connexion" className="btn btn--ghost btn--sm">Se connecter</Link>
@@ -56,12 +61,12 @@ export default function Landing() {
         </div>
       </header>
 
-      <section className="landing-hero">
-        <span className="eyebrow">CRM WhatsApp pour commerçants</span>
-        <h1 className="display-1">Ne perds plus un client dans tes conversations WhatsApp.</h1>
+      <section className="landing-hero market-weave">
+        <span className="eyebrow">Le marché WhatsApp protégé</span>
+        <h1 className="display-1">Vends sur WhatsApp. L'argent de ton client reste bloqué jusqu'à ce qu'il ait reçu sa commande.</h1>
         <p className="text-muted" style={{ fontSize: 16, maxWidth: 560, margin: "0 auto" }}>
-          Ton historique se construit tout seul, Relance te dit qui recontacter, et ta vitrine vend pour toi —
-          sans jamais envoyer un message à ta place.
+          Ton historique de conversation se construit tout seul, DJASSA te dit qui recontacter, et tes clients du
+          marché paient en confiance — sans jamais envoyer un message à ta place.
         </p>
         <div className="row" style={{ gap: 10, justifyContent: "center", marginTop: 8 }}>
           <Link to="/inscription" className="btn btn--primary">7 jours d'essai gratuit</Link>
@@ -69,20 +74,23 @@ export default function Landing() {
         </div>
 
         <div className="landing-hero-mockup">
-          <div style={{ background: "var(--ink)", color: "var(--paper)", padding: "10px 14px", fontWeight: 700, fontSize: 13 }}>
-            Aujourd'hui
+          <div style={{ background: "var(--brand)", color: "var(--brand-ink)", padding: "10px 14px", fontWeight: 700, fontSize: 13, display: "flex", justifyContent: "space-between" }}>
+            <span>Commande #4471</span>
+            <span className="stamp" style={{ background: "none", border: "none", color: "var(--accent)", padding: 0, transform: "none" }}>
+              <IconShield width={13} height={13} /> Protégée
+            </span>
           </div>
           <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{ background: "var(--accent-tint)", borderRadius: 10, padding: "8px 12px", fontSize: 12, fontWeight: 700, color: "var(--accent-ink)" }}>
+            <div style={{ background: "var(--accent-tint)", borderRadius: 8, padding: "8px 12px", fontSize: 12, fontWeight: 700, color: "var(--accent-ink)" }}>
               7 clients attendent une réponse →
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <div style={{ flex: 1, background: "var(--paper-sunken)", borderRadius: 10, padding: 10 }}>
-                <div style={{ fontSize: 18, fontWeight: 800 }}>128 400 F</div>
+              <div style={{ flex: 1, background: "var(--paper-sunken)", borderRadius: 8, padding: 10 }}>
+                <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "var(--font-mono)" }}>128 400 F</div>
                 <div style={{ fontSize: 10, color: "var(--ink-soft)" }}>Ventes ce mois</div>
               </div>
-              <div style={{ flex: 1, background: "var(--paper-sunken)", borderRadius: 10, padding: 10 }}>
-                <div style={{ fontSize: 18, fontWeight: 800 }}>15</div>
+              <div style={{ flex: 1, background: "var(--paper-sunken)", borderRadius: 8, padding: 10 }}>
+                <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "var(--font-mono)" }}>15</div>
                 <div style={{ fontSize: 10, color: "var(--ink-soft)" }}>Contacts actifs</div>
               </div>
             </div>
@@ -130,7 +138,7 @@ export default function Landing() {
       )}
 
       <footer className="landing-footer">
-        <span className="text-muted" style={{ fontSize: 12 }}>Relance — fait pour les vendeurs WhatsApp de Côte d'Ivoire.</span>
+        <span className="text-muted" style={{ fontSize: 12 }}>DJASSA — fait pour les vendeurs WhatsApp de Côte d'Ivoire.</span>
       </footer>
     </div>
   );

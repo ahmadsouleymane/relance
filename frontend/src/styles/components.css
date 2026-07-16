@@ -12,7 +12,7 @@ body {
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
 }
-h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; line-height: 1.15; letter-spacing: -0.01em; font-weight: 600; }
+h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; line-height: 1.2; letter-spacing: 0.005em; font-weight: 400; }
 p { margin: 0; }
 a { color: inherit; }
 button { font-family: inherit; }
@@ -23,19 +23,19 @@ img { max-width: 100%; display: block; }
 ::selection { background: var(--accent); color: var(--paper); }
 
 /* ---------- type scale ---------- */
-.display-1 { font-family: var(--font-display); font-weight: 600; font-size: 32px; letter-spacing: -0.01em; }
-.display-2 { font-family: var(--font-display); font-weight: 600; font-size: 25px; letter-spacing: -0.01em; }
-.h1 { font-family: var(--font-display); font-weight: 600; font-size: 20px; }
-.h2 { font-family: var(--font-display); font-weight: 600; font-size: 16px; }
+.display-1 { font-family: var(--font-display); font-weight: 400; font-size: 30px; line-height: 1.1; }
+.display-2 { font-family: var(--font-display); font-weight: 400; font-size: 22px; line-height: 1.15; }
+.h1 { font-family: var(--font-display); font-weight: 400; font-size: 18px; }
+.h2 { font-family: var(--font-display); font-weight: 400; font-size: 14.5px; }
 .eyebrow {
-  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
-  text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft);
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--brand);
 }
 .text-muted { color: var(--ink-soft); }
 .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 @media (min-width: 640px) {
-  .display-1 { font-size: 42px; }
-  .display-2 { font-size: 29px; }
+  .display-1 { font-size: 40px; }
+  .display-2 { font-size: 26px; }
 }
 
 /* ---------- layout shell ---------- */
@@ -49,9 +49,12 @@ img { max-width: 100%; display: block; }
   height: var(--topbar-h);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 var(--sp-4);
-  background: var(--paper);
-  border-bottom: var(--border-w) solid var(--line);
+  background: var(--brand);
+  border-bottom: 3px solid var(--accent);
 }
+.app-topbar .h1 { color: var(--brand-ink); font-size: 16px; }
+.app-topbar .btn--ghost { border-color: rgba(255, 255, 255, 0.3); color: var(--brand-ink); }
+.app-topbar .avatar { border-color: rgba(255, 255, 255, 0.4); }
 .app-main {
   flex: 1;
   min-width: 0;
@@ -153,6 +156,22 @@ img { max-width: 100%; display: block; }
   padding: var(--sp-5);
 }
 .card--tight { padding: var(--sp-4); }
+
+/* ticket-stub: perforated left/right notch, worn on cards that represent a
+   protected transaction (commande, produit) — a receipt you keep as proof,
+   not decoration on cards with no money attached. */
+.card--ticket {
+  position: relative;
+  border-style: dashed;
+}
+.card--ticket::before, .card--ticket::after {
+  content: ""; position: absolute; top: 50%; margin-top: -7px;
+  width: 14px; height: 14px; border-radius: 999px;
+  background: var(--paper); border: var(--border-w) solid var(--line);
+}
+.card--ticket::before { left: -8px; }
+.card--ticket::after { right: -8px; }
+
 .stack { display: flex; flex-direction: column; gap: var(--sp-4); }
 .stack--sm { gap: var(--sp-2); }
 .row { display: flex; align-items: center; gap: var(--sp-3); }
@@ -179,6 +198,22 @@ img { max-width: 100%; display: block; }
 .pill--accent { background: var(--accent-tint); color: var(--accent-ink); border-color: var(--accent-ink); }
 .pill--danger { background: var(--danger-tint); color: var(--danger); border-color: var(--danger); }
 .pill--dot::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
+
+/* stamp: the ink-stamp mark of the vendor verification pipeline — reused
+   anywhere the app vouches that identity/funds have actually been checked,
+   never for cosmetic emphasis. */
+.stamp {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px 5px 10px;
+  border: 2px solid var(--live-ink);
+  border-radius: var(--radius-sm) var(--radius-md) var(--radius-sm) var(--radius-md);
+  color: var(--live-ink);
+  background: var(--live-tint);
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  transform: rotate(-2deg);
+}
+.stamp svg { flex-shrink: 0; }
 
 /* ---------- segmented control (filtres Conversations, cycles Abonnement) ---------- */
 .segmented {
@@ -245,6 +280,15 @@ img { max-width: 100%; display: block; }
   min-height: 100%;
   background: var(--paper);
 }
+/* market-weave: faint diagonal weave lifted from wax-print cloth, the fabric
+   sold in every market this app's vendors work out of — used only on the two
+   "we're a market" moments (landing hero, auth screens), never in the CRM
+   interior where density and speed matter more than atmosphere. */
+.market-weave {
+  background-image:
+    repeating-linear-gradient(45deg, rgba(28, 21, 9, 0.045) 0 2px, transparent 2px 26px),
+    repeating-linear-gradient(-45deg, rgba(28, 21, 9, 0.045) 0 2px, transparent 2px 26px);
+}
 .landing-nav {
   display: flex; align-items: center; justify-content: space-between;
   padding: var(--sp-4) var(--sp-4);
@@ -256,6 +300,7 @@ img { max-width: 100%; display: block; }
   padding: var(--sp-7) var(--sp-4) var(--sp-6);
   display: flex; flex-direction: column; align-items: center; gap: var(--sp-4);
 }
+.landing-hero.market-weave { max-width: 100%; }
 .landing-hero-mockup {
   width: 100%; max-width: 300px; margin: var(--sp-4) auto 0;
   background: var(--paper-raised);
@@ -282,9 +327,6 @@ img { max-width: 100%; display: block; }
 }
 @media (min-width: 640px) {
   .landing-features { grid-template-columns: 1fr 1fr; }
-}
-@media (min-width: 900px) {
-  .landing-features { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* ============ auth ============ */
@@ -433,7 +475,7 @@ img { max-width: 100%; display: block; }
   position: relative;
 }
 .plan-card--featured {
-  border: 2px solid var(--accent-ink); background: var(--paper-raised);
+  border: 2px solid var(--brand); background: var(--paper-raised);
 }
 .plan-card__badge {
   position: absolute; top: -12px; right: 20px;
@@ -444,7 +486,7 @@ img { max-width: 100%; display: block; }
 .plan-card__price span { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
 .plan-card ul { display: flex; flex-direction: column; gap: 8px; margin: var(--sp-4) 0; }
 .plan-card li { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; }
-.plan-card li svg { color: var(--live-ink); flex-shrink: 0; margin-top: 2px; }
+.plan-card li svg { color: var(--live); flex-shrink: 0; margin-top: 2px; }
 
 @media (min-width: 720px) {
   .plan-grid { flex-direction: row; align-items: stretch; }

@@ -53,6 +53,12 @@ export const IconLogout = (p) => (
   </svg>
 );
 
+export const IconChat = (p) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}>
+    <path d="M4 6.5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9l-4 4v-4a2 2 0 0 1-1-1.7Z" />
+  </svg>
+);
+
 export const IconSearch = (p) => (
   <svg viewBox="0 0 24 24" {...base} {...p}>
     <circle cx="10.5" cy="10.5" r="6" />
@@ -111,6 +117,13 @@ export const IconChart = (p) => (
   <svg viewBox="0 0 24 24" {...base} {...p}>
     <path d="M4 20V10M12 20V4M20 20v-7" />
     <path d="M3 20h18" />
+  </svg>
+);
+
+export const IconShield = (p) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}>
+    <path d="M12 3.5 19.5 6.3V11c0 5-3.2 8.3-7.5 9.7C7.7 19.3 4.5 16 4.5 11V6.3L12 3.5Z" />
+    <path d="M8.7 12 11 14.3l4.3-4.6" />
   </svg>
 );
 

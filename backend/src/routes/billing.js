@@ -5,6 +5,9 @@ import { PLANS, BILLING_CYCLES, priceForCycle } from "../config/plans.js";
 import { createPayment, getPaymentStatus, verifyWebhookSignature } from "../services/geniusPay.js";
 import Payment from "../models/Payment.js";
 import User from "../models/User.js";
+import Order from "../models/Order.js";
+import { markOrderPaid } from "../services/orderEngine.js";
+import { emitToUser } from "../services/realtime.js";
 
 const router = Router();
 
@@ -98,6 +101,14 @@ async function activateSubscription(payment, remoteData) {
 
 // GeniusPay webhook receiver. Mounted with express.raw() so req.body is the
 // exact bytes GeniusPay signed — needed for HMAC verification.
+//
+// This is the ONE webhook URL registered with GeniusPay (scripts/registerWebhook.js
+// registers a single endpoint per environment). It handles BOTH subscription
+// payments (Payment docs, checkout in this file) and marketplace order
+// payments (Order docs, checkout in routes/orders.js) by trying both
+// collections against the reference — simpler and safer than registering a
+// second webhook URL, since we don't know whether GeniusPay supports more
+// than one active subscription per merchant account.
 export const webhookRouter = Router();
 webhookRouter.post(
   "/geniuspay",
@@ -120,17 +131,34 @@ webhookRouter.post(
     if (!reference) return res.status(200).json({ received: true });
 
     const payment = await Payment.findOne({ reference });
-    if (!payment) return res.status(200).json({ received: true });
-
-    if (event.event === "payment.success") {
-      await activateSubscription(payment, event.data);
-    } else if (event.event === "payment.failed") {
-      payment.status = "failed";
-      payment.rawWebhookPayload = event.data;
-      await payment.save();
+    if (payment) {
+      if (event.event === "payment.success") {
+        await activateSubscription(payment, event.data);
+      } else if (event.event === "payment.failed") {
+        payment.status = "failed";
+        payment.rawWebhookPayload = event.data;
+        await payment.save();
+      }
+      return res.status(200).json({ received: true });
     }
 
-    res.status(200).json({ received: true });
+    const order = await Order.findOne({ "payment.reference": reference });
+    if (order) {
+      if (event.event === "payment.success" && order.status === "en_attente_paiement") {
+        await markOrderPaid(order, {
+          reference,
+          geniusPaymentId: order.payment.geniusPaymentId,
+          gateway: event.data.gateway,
+        });
+        emitToUser(order.vendor, "order:paid", { orderId: order._id.toString() });
+      } else if (event.event === "payment.failed") {
+        order.payment.status = "failed";
+        await order.save();
+      }
+      return res.status(200).json({ received: true });
+    }
+
+    res.status(200).json({ received: true }); // unknown reference — ignore
   }
 );
 

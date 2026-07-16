@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Variant 5 — Nœud : deux pans de ruban noués au centre, sans panier ni
+       cercle — la lecture la plus abstraite : "une affaire scellée". -->
+  <path d="M50 50 L17 27 L26 50 L17 73 Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M50 50 L83 27 L74 50 L83 73 Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+  <rect x="42" y="41" width="16" height="18" rx="4" stroke="currentColor" stroke-width="4"/>
+  <circle cx="50" cy="50" r="2.6" fill="currentColor"/>
+</svg>

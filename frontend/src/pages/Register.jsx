@@ -6,7 +6,7 @@ import Logomark from "../components/Logomark.jsx";
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ businessName: "", email: "", phone: "", password: "" });
+  const [form, setForm] = useState({ businessName: "", email: "", phone: "", password: "", accountType: "client" });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -18,7 +18,7 @@ export default function Register() {
     setBusy(true);
     try {
       await register(form);
-      navigate("/");
+      navigate(form.accountType === "vendeur" ? "/verification" : "/");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -27,10 +27,10 @@ export default function Register() {
   };
 
   return (
-    <div className="auth-screen">
+    <div className="auth-screen market-weave">
       <div className="auth-brand">
         <Logomark size={44} />
-        <div className="display-2">Relance</div>
+        <div className="display-2">DJASSA</div>
         <p className="text-muted">7 jours d'essai gratuit, sans carte.</p>
       </div>
 
@@ -38,12 +38,37 @@ export default function Register() {
         <div className="h1" style={{ marginBottom: 18 }}>Créer un compte</div>
 
         <div className="field">
-          <label htmlFor="businessName">Nom de ton business</label>
-          <input id="businessName" required value={form.businessName} onChange={set("businessName")} placeholder="Pharmacie du Plateau" />
+          <label htmlFor="accountType">Je m'inscris comme</label>
+          <div className="row" style={{ gap: 8 }} id="accountType">
+            <button
+              type="button"
+              className={`btn ${form.accountType === "client" ? "btn--primary" : "btn--ghost"}`}
+              onClick={() => setForm((f) => ({ ...f, accountType: "client" }))}
+            >
+              Client — j'achète
+            </button>
+            <button
+              type="button"
+              className={`btn ${form.accountType === "vendeur" ? "btn--primary" : "btn--ghost"}`}
+              onClick={() => setForm((f) => ({ ...f, accountType: "vendeur" }))}
+            >
+              Vendeur — je vends
+            </button>
+          </div>
+          {form.accountType === "vendeur" && (
+            <p className="text-muted" style={{ fontSize: 12.5, marginTop: 6 }}>
+              Une vérification de pièce d'identité sera demandée juste après l'inscription, avant de pouvoir recevoir des commandes.
+            </p>
+          )}
+        </div>
+
+        <div className="field">
+          <label htmlFor="businessName">{form.accountType === "vendeur" ? "Nom de ta boutique" : "Ton nom"}</label>
+          <input id="businessName" required value={form.businessName} onChange={set("businessName")} placeholder={form.accountType === "vendeur" ? "Pharmacie du Plateau" : "Aïcha Koné"} />
         </div>
         <div className="field">
           <label htmlFor="email">Email</label>
-          <input id="email" type="email" required value={form.email} onChange={set("email")} placeholder="toi@business.ci" />
+          <input id="email" type="email" required value={form.email} onChange={set("email")} placeholder="toi@example.ci" />
         </div>
         <div className="field">
           <label htmlFor="phone">Téléphone</label>

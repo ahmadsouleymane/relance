@@ -1,0 +1,11 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Variant 6 — Tampon carré : même panier scellé que la variante 1, dans
+       un cadre carré à coins arrondis — format prêt pour icône d'app
+       (iOS/Android), là où le cercle de la variante 1 laisse trop de vide. -->
+  <rect x="6" y="6" width="88" height="88" rx="22" stroke="currentColor" stroke-width="4"/>
+  <path d="M31 63 C31 42 38 32 50 32 C62 32 69 42 69 63 Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M37 55c8.5 2.2 17.5 2.2 26 0" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity="0.6"/>
+  <rect x="23" y="45.5" width="54" height="10" rx="3" transform="rotate(-28 50 50)" stroke="currentColor" stroke-width="4"/>
+  <circle cx="50" cy="50" r="8" stroke="currentColor" stroke-width="4"/>
+  <circle cx="50" cy="50" r="2.4" fill="currentColor"/>
+</svg>

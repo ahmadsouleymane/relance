@@ -1,0 +1,10 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Variant 4 — Étal : l'auvent à dents d'un kiosque de marché, scellé par
+       le même ruban — penche plus vers "marché" que vers "protection". -->
+  <path d="M18 24 L82 24 L82 32 L71 44 L60 32 L50 44 L40 32 L29 44 L18 32 Z"
+        stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M32 46 L32 78 M68 46 L68 78" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+  <path d="M24 78 L76 78" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+  <rect x="36" y="20.5" width="28" height="7" rx="2" transform="rotate(-20 50 24)" stroke="currentColor" stroke-width="3"/>
+  <circle cx="50" cy="24" r="5" stroke="currentColor" stroke-width="3"/>
+</svg>

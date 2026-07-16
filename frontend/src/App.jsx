@@ -16,6 +16,18 @@ import InvoicePublic from "./pages/InvoicePublic.jsx";
 import Landing from "./pages/Landing.jsx";
 import Vendre from "./pages/Vendre.jsx";
 import Reglages from "./pages/Reglages.jsx";
+import Verification from "./pages/Verification.jsx";
+import Marketplace from "./pages/Marketplace.jsx";
+import Messagerie from "./pages/Messagerie.jsx";
+import Commandes from "./pages/Commandes.jsx";
+import CommandeDetail from "./pages/CommandeDetail.jsx";
+import Admin from "./pages/Admin.jsx";
+import AdminOverview from "./pages/admin/AdminOverview.jsx";
+import AdminVerifications from "./pages/admin/AdminVerifications.jsx";
+import AdminDisputes from "./pages/admin/AdminDisputes.jsx";
+import AdminPayouts from "./pages/admin/AdminPayouts.jsx";
+import AdminOrders from "./pages/admin/AdminOrders.jsx";
+import AdminUsers from "./pages/admin/AdminUsers.jsx";
 
 function PrivateArea() {
   const { user, loading } = useAuth();
@@ -58,6 +70,22 @@ export default function App() {
           <Route index element={<Navigate to="catalogue" replace />} />
           <Route path="catalogue" element={<Catalog />} />
           <Route path="factures" element={<Invoices />} />
+        </Route>
+
+        <Route path="/verification" element={<Verification />} />
+        <Route path="/marche" element={<Marketplace />} />
+        <Route path="/messagerie" element={<Messagerie />} />
+        <Route path="/messagerie/:id" element={<Messagerie />} />
+        <Route path="/commandes" element={<Commandes />} />
+        <Route path="/commandes/:id" element={<CommandeDetail />} />
+
+        <Route path="/admin" element={<Admin />}>
+          <Route index element={<AdminOverview />} />
+          <Route path="verifications" element={<AdminVerifications />} />
+          <Route path="litiges" element={<AdminDisputes />} />
+          <Route path="paiements" element={<AdminPayouts />} />
+          <Route path="commandes" element={<AdminOrders />} />
+          <Route path="utilisateurs" element={<AdminUsers />} />
         </Route>
 
         <Route path="/reglages" element={<Reglages />}>

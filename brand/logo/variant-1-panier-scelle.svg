@@ -1,0 +1,11 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Variant 1 — Panier scellé (retenu) : le panier de marché et le ruban de
+       cire qui le protège, dans une seule forme. Reprend et affine le mark
+       déjà utilisé dans l'app pour garder une identité continue. -->
+  <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="4"/>
+  <path d="M29 62 C29 40 37 30 50 30 C63 30 71 40 71 62 Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M36 53c9 2.5 18.5 2.5 28 0" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  <rect x="21" y="45" width="58" height="11" rx="3" transform="rotate(-28 50 50)" stroke="currentColor" stroke-width="4"/>
+  <circle cx="50" cy="50" r="9" stroke="currentColor" stroke-width="4"/>
+  <circle cx="50" cy="50" r="2.6" fill="currentColor"/>
+</svg>

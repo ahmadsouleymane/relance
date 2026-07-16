@@ -1,19 +1,31 @@
-// Original mark for Relance: a line that reaches out, loses momentum, and
-// curls back on itself before it fully closes — the shape of a conversation
-// you almost let drop, caught in time. Not a chat bubble, not an arrow icon.
+// Mark for DJASSA: a market basket bound shut by a wax-seal ribbon — the two
+// things this app actually does, drawn as one object. Not a padlock, not a
+// generic shield: the goods and the protection on them, in the same shape.
 export default function Logomark({ size = 30 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-      <rect x="1" y="1" width="38" height="38" rx="11" fill="var(--accent)" stroke="var(--ink)" strokeWidth="1.8" />
+      <circle cx="20" cy="20" r="18" fill="var(--brand)" stroke="var(--ink)" strokeWidth="1.8" />
       <path
-        d="M12 15.5c0-3 3-5 6.5-5 4.5 0 8 3 8 7.3 0 4.8-4 7.7-8.8 8.7"
+        d="M11.5 25 C11.5 17.5 15.2 14 20 14 C24.8 14 28.5 17.5 28.5 25 Z"
+        fill="var(--paper)"
         stroke="var(--ink)"
-        strokeWidth="2.1"
-        strokeLinecap="round"
-        fill="none"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
       />
-      <path d="M20.3 30.3 16 27.2l5-1.4" stroke="var(--ink)" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      <circle cx="12" cy="15.5" r="1.9" fill="var(--ink)" />
+      <path d="M14.5 21.5c3.6 1 7.4 1 11 0" stroke="var(--ink)" strokeWidth="1.1" strokeLinecap="round" opacity="0.55" />
+      <rect
+        x="8.5"
+        y="18"
+        width="23"
+        height="4.6"
+        rx="1.2"
+        fill="var(--accent)"
+        stroke="var(--ink)"
+        strokeWidth="1.3"
+        transform="rotate(-28 20 20)"
+      />
+      <circle cx="20" cy="20" r="3.6" fill="var(--accent)" stroke="var(--ink)" strokeWidth="1.3" />
+      <circle cx="20" cy="20" r="1.1" fill="var(--ink)" />
     </svg>
   );
 }

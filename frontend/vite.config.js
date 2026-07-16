@@ -10,6 +10,11 @@ export default defineConfig({
         target: process.env.VITE_API_PROXY || "http://localhost:4040",
         changeOrigin: true,
       },
+      "/socket.io": {
+        target: process.env.VITE_API_PROXY || "http://localhost:4040",
+        changeOrigin: true,
+        ws: true,
+      },
     },
   },
 });

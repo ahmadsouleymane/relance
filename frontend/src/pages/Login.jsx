@@ -26,11 +26,11 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-screen">
+    <div className="auth-screen market-weave">
       <div className="auth-brand">
         <Logomark size={44} />
-        <div className="display-2">Relance</div>
-        <p className="text-muted">Le carnet client de ton WhatsApp.</p>
+        <div className="display-2">DJASSA</div>
+        <p className="text-muted">Le marché WhatsApp protégé.</p>
       </div>
 
       <form className="card auth-card" onSubmit={onSubmit}>

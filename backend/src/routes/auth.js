@@ -1,6 +1,6 @@
 import { Router } from "express";
 import User from "../models/User.js";
-import { signToken, requireAuth } from "../middleware/auth.js";
+import { signToken, requireAuth, isAdminEmail } from "../middleware/auth.js";
 import { slugify } from "../utils/slugify.js";
 
 const router = Router();
@@ -17,22 +17,29 @@ async function uniqueStoreSlug(businessName) {
 }
 
 router.post("/register", async (req, res) => {
-  const { businessName, email, phone, password } = req.body;
+  const { businessName, email, phone, password, accountType } = req.body;
   if (!businessName || !email || !password) {
     return res.status(400).json({ error: "businessName, email et password sont requis" });
   }
   if (password.length < 8) {
     return res.status(400).json({ error: "Le mot de passe doit contenir au moins 8 caractères" });
   }
+  const type = accountType === "client" ? "client" : "vendeur";
 
   const existing = await User.findOne({ email: email.toLowerCase() });
   if (existing) return res.status(409).json({ error: "Un compte existe déjà avec cet email" });
 
+  // The ID document itself can't be uploaded before the account exists (the
+  // presigned upload endpoint requires auth) — a vendor account is created
+  // immediately but starts "non_soumise" and is gated out of the public
+  // marketplace and order creation (see User.isVerifiedSeller) until they
+  // submit it via POST /api/verification/submit right after signing up.
   const user = new User({
     businessName,
     email,
     phone,
-    storeSlug: await uniqueStoreSlug(businessName),
+    accountType: type,
+    storeSlug: type === "vendeur" ? await uniqueStoreSlug(businessName) : undefined,
     plan: {
       id: "starter",
       status: "trialing",
@@ -58,7 +65,11 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/me", requireAuth, async (req, res) => {
-  res.json({ user: req.user, hasActiveAccess: req.user.hasActiveAccess() });
+  res.json({
+    user: req.user,
+    hasActiveAccess: req.user.hasActiveAccess(),
+    isAdmin: isAdminEmail(req.user.email),
+  });
 });
 
 router.patch("/store-slug", requireAuth, async (req, res) => {
