@@ -12,3 +12,14 @@ data/
 .env.*
 !.env.example
 .npmrc
+
+# Dev tooling / personal
+.DS_Store
+CLAUDE.md
+AGENTS.md
+.claude/
+.agents/
+.windsurf/
+_bmad/
+.vscode/
+
