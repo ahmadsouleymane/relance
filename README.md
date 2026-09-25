@@ -85,3 +85,9 @@ Remises : -10% en trimestriel, -20% en annuel. Source unique de vérité :
 déconnecté) et un nouveau QR en cas de coupure. La session se relance automatiquement
 une fois côté serveur (`whatsapp/manager.js`) sauf déconnexion explicite ("logged out"
 depuis le téléphone), auquel cas un nouveau scan est requis.
+
+---
+
+## 👤 Auteur
+
+**Ahmad Souleymane** — [@ahmadsouleymane](https://github.com/ahmadsouleymane)
