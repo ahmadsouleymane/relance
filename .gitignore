@@ -6,3 +6,9 @@ data/
 
 # superpowers scratch (progress ledgers, brainstorm mockups)
 .superpowers/
+
+# env (purged from history)
+.env
+.env.*
+!.env.example
+.npmrc
